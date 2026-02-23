@@ -29,6 +29,11 @@
   cursor: pointer;
   font-weight: 500;
   transition: 0.3s;
+  
+}
+.admin-bookings .header-actions {
+  display: flex;
+  gap: 15px;
 }
 
 .today-btn:hover {

@@ -1,78 +1,100 @@
-import React, { useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./AdminBookings.css";
 
 const AdminBookings = () => {
+  const today = new Date().toISOString().split("T")[0];
   const [bookings, setBookings] = useState([]);
-  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState(today);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
 
   const token = localStorage.getItem("token");
 
-  const fetchBookings = async (date = "") => {
+  const fetchBookingsByDate = async (date) => {
     try {
-      const url = date
-        ? `http://localhost:8080/api/bookings/date/${date}`
-        : `http://localhost:8080/api/bookings/all`;
-
-      const res = await axios.get(url, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
+      const res = await axios.get(
+        `http://localhost:8080/api/bookings/date/${date}`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+      );
       setBookings(res.data);
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.error(error);
     }
   };
+  const fetchAllBookings = async () => {
+  try {
+    const res = await axios.get(
+      "http://localhost:8080/api/bookings/all",
+      {headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+    );
+    setBookings(res.data);
+  } catch (error) {
+    console.error(error);
+  }
+};
 
-  useEffect(() => {
-    fetchBookings();
-  }, []);
+useEffect(() => {
+  if (selectedDate) {
+    fetchBookingsByDate(selectedDate);
+  } else {
+    fetchAllBookings();
+  }
+}, [selectedDate]);
 
   // Today button
   const handleToday = () => {
     const today = new Date().toISOString().split("T")[0];
     setSelectedDate(today);
-    fetchBookings(today);
   };
 
   // Filtered bookings
-// Filtered bookings (simple way)
-const filteredBookings = bookings.filter((b) => {
-  const matchesSearch =
-    b.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    b.phone?.includes(searchTerm) ||
-    b.id?.toLowerCase().includes(searchTerm.toLowerCase());
+  // Filtered bookings (simple way)
+  const filteredBookings = bookings.filter((b) => {
+    const matchesSearch =
+      b.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      b.phone?.includes(searchTerm) ||
+      b.id?.toLowerCase().includes(searchTerm.toLowerCase());
 
-  const matchesStatus =
-    statusFilter === "All" || b.status === statusFilter;
+    const matchesStatus = statusFilter === "All" || b.status === statusFilter;
 
-  return matchesSearch && matchesStatus;
-});
-
+    return matchesSearch && matchesStatus;
+  });
 
   // Summary Data
   const totalBookings = filteredBookings.length;
   const confirmed = filteredBookings.filter(
-    (b) => b.status === "BOOKED"
+    (b) => b.status === "BOOKED",
   ).length;
   const cancelled = filteredBookings.filter(
-    (b) => b.status === "CANCELLED"
+    (b) => b.status === "CANCELLED",
   ).length;
-  const totalGuests = filteredBookings.reduce(
-    (sum, b) => sum + b.guests,
-    0
-  );
+  const totalGuests = filteredBookings.reduce((sum, b) => sum + b.guests, 0);
 
   return (
     <div className="admin-bookings">
       {/* Header */}
       <div className="top-header">
-        <h2>Advance Table Bookings</h2>
+        <div>
+          <h2>Advance Table Bookings</h2>
+        </div>
+        <div className="header-actions">
         <button className="today-btn" onClick={handleToday}>
           📅 Today
         </button>
+        <button
+          className="today-btn"
+          onClick={() => setSelectedDate("")}
+        >
+          📋 All Bookings
+        </button>
+        </div>
       </div>
 
       {/* Summary Cards */}
@@ -104,16 +126,12 @@ const filteredBookings = bookings.filter((b) => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-          <input
-    type="date"
-    className="date-filter"
-    value={selectedDate}
-    onChange={(e) => {
-      const value = e.target.value;
-      setSelectedDate(value);
-      fetchBookings(value);
-    }}
-  />
+        <input
+          type="date"
+          className="date-filter"
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+        />
 
         <select
           className="status-filter"
@@ -154,9 +172,7 @@ const filteredBookings = bookings.filter((b) => {
             <span>Table {b.tableNumber || b.tableId}</span>
             <span
               className={
-                b.status === "BOOKED"
-                  ? "status-confirmed"
-                  : "status-cancelled"
+                b.status === "BOOKED" ? "status-confirmed" : "status-cancelled"
               }
             >
               {b.status}
