@@ -90,7 +90,7 @@ public class OrderServiceImpl implements OrderService {
     // ================= READ ALL =================
     @Override
     public List<OrderResponse> getAllOrders() {
-        return orderRepository.findAll()
+        return orderRepository.findAllByOrderByCreatedAtDesc()
                 .stream()
                 .map(this::convertToResponse)
                 .toList();

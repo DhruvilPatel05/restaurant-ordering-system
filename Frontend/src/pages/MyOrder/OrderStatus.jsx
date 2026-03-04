@@ -45,22 +45,38 @@ const OrderStatus = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    axios
-      .get(`${API}/api/orders/${orderId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => setOrder(res.data))
-      .catch((err) => console.log(err));
-  }, [orderId]);
+ useEffect(() => {
+  const token = localStorage.getItem("token");
 
-useEffect(() => {
-  if (order?.orderStatus) {
-    const stepIndex = statusMap[order.orderStatus];
-    setActiveStep(stepIndex);
-  }
-}, [order?.orderStatus]);
+  const fetchOrder = async () => {
+    try {
+      const res = await axios.get(`${API}/api/orders/${orderId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setOrder(res.data);
+    } catch (error) {
+      console.error("Failed to load order", error);
+    }
+  };
+
+  // first load
+  fetchOrder();
+
+  // auto refresh every 5 sec
+  const interval = setInterval(fetchOrder, 5000);
+
+  return () => clearInterval(interval);
+}, [orderId]);
+
+  useEffect(() => {
+    if (order?.orderStatus) {
+      const stepIndex = statusMap[order.orderStatus];
+      setActiveStep(stepIndex);
+    }
+  }, [order?.orderStatus]);
 
   const subtotal = order?.amount || 0;
   const tax = subtotal * 0.1;
@@ -75,7 +91,7 @@ useEffect(() => {
           </span>
           <div>
             <h2>Order Status</h2>
-           <p>{order?.orderNumber}</p>
+            <p>{order?.orderNumber}</p>
           </div>
         </div>
       </div>

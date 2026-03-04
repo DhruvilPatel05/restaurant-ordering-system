@@ -12,14 +12,8 @@ const Orders = () => {
   // ---------------- FETCH ORDERS ----------------
   const fetchOrders = async () => {
     try {
-     
-      //       const res = await axios.get("http://localhost:8080/api/orders", {
-      // headers: {
-      //           Authorization: `Bearer ${token}`,
-      //         },
-      //       });
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/orders`,
+        "http://localhost:8080/api/orders",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -38,31 +32,19 @@ const Orders = () => {
     }
   };
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
+useEffect(() => {
+  fetchOrders(); // first load immediately
 
-  // ---------------- FILTER LOGIC ----------------
-  // const filteredOrders = orders.filter((order) => {
-  //   const matchTab =
-  //     activeTab === "All" ||
-  //     order.orderStatus?.toLowerCase() === activeTab.toLowerCase();
+  const interval = setInterval(fetchOrders, 5000); // refresh every 5 sec
 
-  //   const itemsText = order.orderedItems
-  //     ?.map((i) => i.name)
-  //     .join(" ")
-  //     .toLowerCase();
-
-  //   const matchSearch =
-  //     order.email?.toLowerCase().includes(search.toLowerCase()) ||
-  //     order.phoneNumber?.includes(search) ||
-  //     itemsText?.includes(search.toLowerCase());
-
-  //   return matchTab && matchSearch;
-  // });
+  return () => clearInterval(interval); // cleanup
+}, []);
   const filteredOrders = orders.filter((o)=>{
     if(activeTab==="All"){
       return true;
+    }else if(activeTab==="Today"){
+     const today = new Date().toISOString().split("T")[0];
+    return o.createdAt?.startsWith(today);
     }else if(activeTab==="New"){
       return o.orderStatus==="CREATED";
     }else if(activeTab==="Cooking"){
@@ -75,14 +57,6 @@ const Orders = () => {
     return false;
   })
 
-  //   const filteredOrders = orders.filter((order) => {
-  //   if (activeFilter === "all") return order.orderStatus !== "SERVED";
-  //   if (activeFilter === "new") return order.orderStatus === "CREATED";
-  //   if (activeFilter === "cooking") return order.orderStatus === "COOKING";
-  //   if (activeFilter === "ready") return order.orderStatus === "READY";
-  //   if (activeFilter === "completed") return order.orderStatus === "SERVED";
-  //   return true;
-  // });
 
 
   const deleteOrder = async (id) => {
@@ -120,7 +94,7 @@ const Orders = () => {
 
       {/* Tabs */}
       <div className="orders-tabs">
-        {["All", "New", "Cooking", "Ready","Completed"].map((tab) => (
+        {["All", "Today", "New", "Cooking", "Ready","Completed"].map((tab) => (
           <button
             key={tab}
             className={`tab ${activeTab === tab ? "active" : ""}`}
