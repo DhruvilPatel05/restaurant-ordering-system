@@ -65,6 +65,23 @@ public class StaffServiceImpl implements StaffService{
         userRepository.deleteById(id);
     }
 
+    @Override
+    public StaffResponse updateStaff(String id, StaffRequest request) {
+
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Staff not found"));
+
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPhone(request.getPhone());
+        user.setRole(Role.valueOf(request.getRole().toUpperCase()));
+        user.setActive(request.isActive());
+
+        UserEntity saved = userRepository.save(user);
+
+        return mapToResponse(saved);
+    }
+
     private StaffResponse mapToResponse(UserEntity user) {
         return StaffResponse.builder()
                 .id(user.getId())

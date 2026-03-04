@@ -42,4 +42,11 @@ public class AdminStaffController {
     public void deleteStaff(@PathVariable String id) {
         staffService.deleteStaff(id);
     }
+
+    @PutMapping("/{id}")
+    public StaffResponse updateStaff(
+            @PathVariable String id,
+            @RequestBody StaffRequest request) {
+        return staffService.updateStaff(id, request);
+    }
 }

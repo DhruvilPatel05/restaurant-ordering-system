@@ -14,4 +14,5 @@ public interface StaffService {
     StaffResponse updateStatus(String id, boolean active);
 
     void deleteStaff(String id);
+    StaffResponse updateStaff(String id, StaffRequest request);
 }
