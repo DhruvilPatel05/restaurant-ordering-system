@@ -1,8 +1,8 @@
 .orders-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
-  gap: 22px;
-  padding: 30px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 20px;
 }
 .no-orders {
   text-align: center;
@@ -21,4 +21,17 @@
   border-radius: 6px;
   cursor: pointer;
   margin: 20px;
+}
+@media (max-width: 600px) {
+
+  .orders-grid {
+    grid-template-columns: 1fr;
+    padding: 15px;
+    gap: 16px;
+  }
+
+  .orders-wrapper{
+    padding: 10px;
+  }
+
 }

@@ -37,7 +37,7 @@ const OrderCard = ({ order, onClick }) => {
 
         <div className="right">
           <span className={`pill ${order.status}`}>
-            ● {order.status.replace("_", " ")}
+            {order.status.replace("_", " ")}
           </span>
 
           <div className="amt">₹{order.amount}</div>

@@ -308,8 +308,13 @@ select:focus {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 25px;
-  margin-top: 20px;
 }
+@media (max-width: 600px) {
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 
 .input-group label {
   font-weight: 600;
@@ -653,4 +658,11 @@ padding: 14px 16px !important;
 
 .mybookings-wrapper .no-bookings button:hover {
   background: #e85a24;
+}
+
+
+.error {
+  color: red;
+  font-size: 13px;
+  margin-top: 4px;
 }

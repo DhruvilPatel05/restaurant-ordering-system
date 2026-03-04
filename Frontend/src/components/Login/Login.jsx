@@ -88,6 +88,12 @@ const Login = () => {
             value={data.password}
             onChange={handleChange}
           />
+          <p
+  className="forgot-link"
+  onClick={() => navigate("/forgot-password")}
+>
+  Forgot Password?
+</p>
 
           <button className="signin-btn" type="submit">
             SIGN IN

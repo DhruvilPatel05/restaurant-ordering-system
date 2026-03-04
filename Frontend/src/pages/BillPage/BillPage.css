@@ -5,43 +5,36 @@
   padding: 0 20px 60px 20px;
 
 }
-/* FULL WIDTH HEADER */
 .bill-header {
   width: 100%;
   background: #f1eee9;
-  padding: 22px 40px;
+  padding: 18px 20px;   /* smaller padding */
 }
 
-/* Align content left */
 .bill-header-content {
-    padding: 0px 100px;
   display: flex;
-  align-items: center;
-  gap: 15px;
+   align-items: flex-start;
+  gap: 12px;
+  padding: 0;          /* remove 100px padding */
 }
 
-/* Back arrow */
 .bill-header .back-arrow {
   font-size: 20px;
   cursor: pointer;
   color: #444;
 }
 
-/* Title */
 .bill-header .header-text h2 {
   margin: 0;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 600;
-  color: #222;
 }
 
-/* Subtitle */
 .bill-header .header-text p {
-  margin: 6px 0 0 0;
-  font-size: 14px;
+  margin: 4px 0 0 0;
+  font-size: 13px;
   color: #7a7a7a;
 }
-
 
 /* ================= ORDER CARD ================= */
 
@@ -187,4 +180,29 @@
 
 .bill-page .pay-btn:hover {
   transform: translateY(-2px);
+}
+
+@media (max-width: 480px) {
+
+  .bill-page {
+    margin: 20px auto;
+    padding: 0 12px 40px 12px;
+  }
+
+  .bill-header {
+    padding: 14px 16px;
+  }
+
+  .bill-header-content {
+    gap: 10px;
+  }
+
+  .bill-header .header-text h2 {
+    font-size: 18px;
+  }
+
+  .bill-header .header-text p {
+    font-size: 12px;
+  }
+
 }

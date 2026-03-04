@@ -7,39 +7,40 @@
 
 /* ================= HEADER ================= */
 /* FULL WIDTH HEADER */
+/* HEADER CONTAINER */
 .orders-header {
   width: 100%;
   background: #f1eee9;
-  
+  padding: 18px 20px;
 }
 
-/* Center content inside header */
+/* FLEX ALIGNMENT */
 .orders-header-inner {
-  max-width: 600px;
-  padding: 22px 100px;
   display: flex;
-  gap: 14px;
+  align-items: flex-start;
+  gap: 12px;
 }
 
-/* Back arrow */
+/* BACK ARROW */
 .orders-header .back {
-  font-size: 22px;
+  font-size: 20px;
   cursor: pointer;
   color: #444;
 }
 
-/* Title */
+/* TITLE */
 .orders-header h2 {
   margin: 0;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 600;
+  color: #222;
 }
 
-/* Subtitle */
+/* SUBTITLE */
 .orders-header p {
   margin: 4px 0 0 0;
-  color: #777;
-  font-size: 14px;
+  font-size: 13px;
+  color: #7a7a7a;
 }
 
 /* ================= CARD ================= */
@@ -188,4 +189,23 @@
   background: #24C35E;
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(36, 195, 94, 0.35);
+}
+@media (max-width: 480px) {
+
+  .orders-header {
+    padding: 14px 16px;
+  }
+
+  .orders-header-inner {
+    gap: 10px;
+  }
+
+  .orders-header h2 {
+    font-size: 18px;
+  }
+
+  .orders-header p {
+    font-size: 12px;
+  }
+
 }

@@ -84,6 +84,9 @@ const Menubar = () => {
              <Link to="/table-booking" className="menubar-brand-name">
               Table Booking
             </Link>
+                <Link to="/change-password" className="menubar-brand-name">
+              Change Password
+            </Link>
 
             
           </div>
@@ -160,6 +163,9 @@ const Menubar = () => {
             </Link>
            <Link to="/table-booking"  onClick={closeMenu} className="menubar-brand-name">
               Table Booking
+            </Link>
+              <Link to="/change-password"  onClick={closeMenu} className="menubar-brand-name">
+              Change Password
             </Link>
 
           <div className="mobile-divider" />

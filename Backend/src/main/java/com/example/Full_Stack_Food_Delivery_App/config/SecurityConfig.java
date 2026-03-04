@@ -44,6 +44,8 @@ public class SecurityConfig {
                                 "/api/login",
                                 "/api/register",
                                 "/api/send-otp",
+                                "/api/change-password",
+                                "/api/reset-password",
                                 "/api/verify-otp",
                                 "/images/view/**",
                                 "/api/foods/getAll",

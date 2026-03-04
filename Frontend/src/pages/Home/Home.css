@@ -10,7 +10,7 @@
 
 .hero {
   min-height: 60vh;
-  padding: 70px 20px 40px;
+  padding: 40px 20px 40px;
   text-align: center;
   background: radial-gradient(circle at top, #ffe7d1, #fffaf5);
 }
@@ -202,7 +202,7 @@
   margin-bottom: 10px;
 }
 
-.sstep-card-circle p {
+.step-card-circle p {
   font-size: 15px;
   color: #666;
 }
@@ -335,4 +335,13 @@
     margin: 40px 10px;
     padding: 70px 20px;
   }
+}
+
+@media (max-width: 600px) {
+
+  .hero {
+    padding: 20px 16px 30px;
+    min-height: auto;
+  }
+
 }

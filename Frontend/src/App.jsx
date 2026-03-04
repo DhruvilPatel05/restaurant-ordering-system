@@ -30,6 +30,8 @@ import BookingPage from "./pages/TableBooking/BookingPage";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import TableOrders from "./pages/TableOrders/TableOrders";
 import BillPage from "./pages/BillPage/BillPage";
+import ChangePassword from "./pages/ChangePassword/ChangePassword";
+import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 // Dummy pages (replace with your real pages)
 // const Dashboard = () => <h1>Dashboard Page</h1>;
 // const Tables = () => <h1>Tables Page</h1>;
@@ -105,6 +107,11 @@ const App = () => {
           <Route path="staff" element={<Staff />} />
           <Route path="adminBookings" element={<Analytics />} />
         </Route>
+
+          <Route path="/change-password" element={<ChangePassword />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+
+        <Route path="*" element={<h1>404 - Page Not Found</h1>} />
       </Routes>
     </div>
   );

@@ -1,11 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 
 const StepThree = ({ form, setForm, onBack, onBook }) => {
+
+  const [errors, setErrors] = useState({});
   const isValid = form.name.trim() !== "" && form.phone.trim() !== "";
   const token = localStorage.getItem("token");
 
+  const validate = () => {
+  let newErrors = {};
+
+  if (!/^[A-Za-z ]{3,}$/.test(form.name.trim())) {
+    newErrors.name = "Please enter your full name";
+  }
+
+  if (!/^[0-9]{10}$/.test(form.phone)) {
+    newErrors.phone = "Phone number must be 10 digits";
+  }
+
+  setErrors(newErrors);
+
+  return Object.keys(newErrors).length === 0;
+};
+
   const handleBooking = async () => {
+     if (!validate()) return;
     try {
       const userId = localStorage.getItem("userId");
 
@@ -47,6 +66,7 @@ const StepThree = ({ form, setForm, onBack, onBook }) => {
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
           />
+          {errors.name && <p className="error">{errors.name}</p>}
         </div>
 
         <div className="input-group">
@@ -55,6 +75,7 @@ const StepThree = ({ form, setForm, onBack, onBook }) => {
             value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
           />
+        {errors.phone && <p className="error">{errors.phone}</p>}
         </div>
       </div>
 

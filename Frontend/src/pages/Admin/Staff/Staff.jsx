@@ -11,6 +11,7 @@ const Staff = () => {
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [editingId, setEditingId] = useState(null);
 
   const [form, setForm] = useState({
     name: "",
@@ -74,7 +75,7 @@ const Staff = () => {
     }
 
     try {
-     const res =  await axios.post(API_BASE, form, {
+      const res = await axios.post(API_BASE, form, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -109,6 +110,44 @@ const Staff = () => {
       setStaff((prev) => prev.filter((s) => s.id !== id));
     } catch (err) {
       console.error("Failed to delete staff", err);
+    }
+  };
+
+  const handleEdit = (member) => {
+    setForm({
+      name: member.name,
+      email: member.email,
+      phone: member.phone,
+      role: member.role,
+      active: member.active,
+    });
+
+    setEditingId(member.id);
+    setShowModal(true);
+  };
+
+  const handleUpdateStaff = async () => {
+    try {
+      const res = await axios.put(`${API_BASE}/${editingId}`, form, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setStaff((prev) => prev.map((s) => (s.id === editingId ? res.data : s)));
+
+      setShowModal(false);
+      setEditingId(null);
+
+      setForm({
+        name: "",
+        email: "",
+        phone: "",
+        role: "",
+        active: true,
+      });
+    } catch (err) {
+      console.error("Failed to update staff", err);
     }
   };
 
@@ -198,6 +237,7 @@ const Staff = () => {
                   </td>
 
                   <td className="actions">
+                    <span onClick={() => handleEdit(member)}>✏️</span>
                     <span onClick={() => deleteStaff(member.id)}>🗑️</span>
                   </td>
                 </tr>
@@ -276,12 +316,18 @@ const Staff = () => {
             <div className="modal-actions">
               <button
                 className="cancel-btn"
-                onClick={() => setShowModal(false)}
+                onClick={() => {
+                  setShowModal(false);
+                  setEditingId(null);
+                }}
               >
                 Cancel
               </button>
-              <button className="save-btn" onClick={handleAddStaff}>
-                Add Staff
+              <button
+                className="save-btn"
+                onClick={editingId ? handleUpdateStaff : handleAddStaff}
+              >
+                {editingId ? "Update Staff" : "Add Staff"}
               </button>
             </div>
           </div>

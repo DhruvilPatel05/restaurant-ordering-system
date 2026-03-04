@@ -1,10 +1,7 @@
 package com.example.Full_Stack_Food_Delivery_App.controller;
 
 import com.example.Full_Stack_Food_Delivery_App.entity.UserEntity;
-import com.example.Full_Stack_Food_Delivery_App.io.AuthenticationRequest;
-import com.example.Full_Stack_Food_Delivery_App.io.AuthenticationResponse;
-import com.example.Full_Stack_Food_Delivery_App.io.OtpRequest;
-import com.example.Full_Stack_Food_Delivery_App.io.OtpVerifyRequest;
+import com.example.Full_Stack_Food_Delivery_App.io.*;
 import com.example.Full_Stack_Food_Delivery_App.repository.UserRepository;
 import com.example.Full_Stack_Food_Delivery_App.service.AppUserDetailsService;
 import com.example.Full_Stack_Food_Delivery_App.service.EmailService;
@@ -17,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,11 +29,13 @@ import java.time.LocalDateTime;
 public class AuthController {
 
 
+
     private final UserRepository userRepository;
     private final EmailService emailService;
     private final AuthenticationManager authenticationManager;
     private final AppUserDetailsService appUserDetailsService;
     private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
 
 
 
@@ -129,4 +129,55 @@ public class AuthController {
         );
     }
 
+
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changePassword(
+            @RequestBody ChangePasswordRequest request) {
+
+        UserEntity user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // check current password
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Current password is incorrect");
+        }
+
+        // update password
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+
+        return ResponseEntity.ok("Password updated successfully");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(
+            @RequestBody ResetPasswordRequest request) {
+
+        UserEntity user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // check OTP
+        if (user.getOtp() == null || !user.getOtp().equals(request.getOtp())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid OTP");
+        }
+
+        // check OTP expiry
+        if (user.getOtpExpiry().isBefore(LocalDateTime.now())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("OTP expired");
+        }
+
+        // update password
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+
+        // clear OTP after use
+        user.setOtp(null);
+        user.setOtpExpiry(null);
+
+        userRepository.save(user);
+
+        return ResponseEntity.ok("Password reset successful");
+    }
 }
