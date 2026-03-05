@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { StoreContext } from "../../context/StoreContext";
 
 import "./FoodDisplay.css";
-import FoodItem from "../FoodItem/Fooditem";
+import FoodItem from "../FoodItem/FoodItem";
 
 const FoodDisplay = ({ category, searchText }) => {
   const { foodList } = useContext(StoreContext);
