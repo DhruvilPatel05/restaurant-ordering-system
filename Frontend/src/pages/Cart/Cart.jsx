@@ -102,7 +102,7 @@ const Cart = () => {
                 <div className="cart-item" key={item.id}>
                   <div className="item-info">
                     <img
-                      src={`${import.meta.env.VITE_API_URL}/images/view/${item.imageUrl}`}
+                      src={item.imageUrl}
                       alt={item.name}
                       className="food-image"
                     />

@@ -23,42 +23,20 @@ public class FoodController {
 
     @PostMapping(value = "/add",consumes = "multipart/form-data")
     public FoodResponse addFood(
-            @RequestPart("food") String foodString,
+            @RequestPart("food") FoodRequest request,
             @RequestPart("file") MultipartFile file) {
 
-        try {
-            FoodRequest request =
-                    objectMapper.readValue(foodString, FoodRequest.class);
-
-            return foodService.addFood(request, file);
-
-        } catch (Exception e) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Invalid food JSON"
-            );
-        }
+        return foodService.addFood(request, file);
     }
 
     @PutMapping(value = "/update/{id}", consumes = "multipart/form-data")
     public FoodResponse updateFood(
             @PathVariable String id,
-            @RequestPart("food") String foodString,
+            @RequestPart("food") FoodRequest request,
             @RequestPart(value = "file", required = false) MultipartFile file
     ) {
 
-        try {
-            FoodRequest request =
-                    objectMapper.readValue(foodString, FoodRequest.class);
-
-            return foodService.updateFood(id, request, file);
-
-        } catch (Exception e) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Invalid food JSON"
-            );
-        }
+        return foodService.updateFood(id, request, file);
     }
 
 

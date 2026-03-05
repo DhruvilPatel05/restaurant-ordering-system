@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -20,9 +21,9 @@ public class FoodServiceImpl implements FoodService {
     private final ImageService imageService;
 
     @Override
-    public String uploadFile(MultipartFile file) {
+    public Map uploadFile(MultipartFile file) {
         try {
-            return imageService.uploadImage(file); // GridFS
+            return imageService.uploadImage(file);
         } catch (Exception e) {
             throw new RuntimeException("Image upload failed");
         }
@@ -31,11 +32,12 @@ public class FoodServiceImpl implements FoodService {
     @Override
     public FoodResponse addFood(FoodRequest request, MultipartFile file) {
 
-        // 1️⃣ Upload image
-        String imageId = uploadFile(file);
-//        String imageUrl = "http://localhost:8080/images/view/" + imageId;
-        String imageUrl =  imageId;
-        FoodEntity food = convertToEntity(request, imageUrl);
+        Map result = imageService.uploadImage(file);
+
+        String imageUrl = result.get("secure_url").toString();
+        String publicId = result.get("public_id").toString();
+
+        FoodEntity food = convertToEntity(request, imageUrl,publicId);
 
         FoodEntity saved = foodRepository.save(food);
 
@@ -70,30 +72,39 @@ public class FoodServiceImpl implements FoodService {
                         HttpStatus.NOT_FOUND,
                         "Food not found with id: " + id
                 ));
-        if(food.getImageUrl() != null){
-            imageService.deleteImage(food.getImageUrl());
-        }
+//        if(food.getImageUrl() != null){
+//            imageService.deleteImage(food.getImageUrl());
+//        }
         foodRepository.deleteById(id);
     }
 
     @Override
     public FoodResponse updateFood(String id, FoodRequest request, MultipartFile file) {
+
         FoodEntity food = foodRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Food not found"));
-        if(file !=null && !file.isEmpty()){
-            if (food.getImageUrl() != null) {
-                imageService.deleteImage(food.getImageUrl());
+
+        if (file != null && !file.isEmpty()) {
+
+            // delete old image
+            if (food.getImagePublicId() != null) {
+                imageService.deleteImage(food.getImagePublicId());
             }
-            String newImageId = uploadFile(file);
-            food.setImageUrl(newImageId);
+
+            Map result = imageService.uploadImage(file);
+
+            food.setImageUrl(result.get("secure_url").toString());
+            food.setImagePublicId(result.get("public_id").toString());
         }
+
         food.setName(request.getName());
         food.setDescription(request.getDescription());
         food.setPrice(request.getPrice());
         food.setCategory(request.getCategory());
-        food.setActive(food.isActive());
+
         FoodEntity saved = foodRepository.save(food);
+
         return convertToResponse(saved);
     }
 
@@ -110,13 +121,14 @@ public class FoodServiceImpl implements FoodService {
     }
 
 
-    private FoodEntity convertToEntity(FoodRequest request, String imageId) {
+    private FoodEntity convertToEntity(FoodRequest request, String imageUrl,String publicId) {
         return FoodEntity.builder()
                 .name(request.getName())
                 .description(request.getDescription())
                 .price(request.getPrice())
                 .category(request.getCategory())
-                .imageUrl(imageId)
+                .imageUrl(imageUrl)
+                .imagePublicId(publicId)
                 .active(true)
                 .build();
     }

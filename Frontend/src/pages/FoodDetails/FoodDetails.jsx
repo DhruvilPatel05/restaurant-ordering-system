@@ -61,7 +61,7 @@ const FoodDetails = () => {
       <div className="food-details">
        {data.imageUrl && (
   <img
-    src={`${import.meta.env.VITE_API_URL}/images/view/${data.imageUrl}`}
+    src={data.imageUrl}
     alt={data.name}
     className="food-details-image"
   />

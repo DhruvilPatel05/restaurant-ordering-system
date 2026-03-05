@@ -10,7 +10,7 @@ const FoodItem = ({id, name, description, price, imageUrl }) => {
   return (
     <div to={`/food/${id}`} className="food-card">
       <Link to={`/food/${id}`} >
-      <img src={`${import.meta.env.VITE_API_URL}/images/view/${imageUrl}`} alt={name} className="food-image" />
+      <img src={imageUrl} alt={name} className="food-image" />
       </Link>
 
       <div className="food-info">

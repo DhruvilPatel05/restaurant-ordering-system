@@ -72,29 +72,38 @@ const MenuManagement = () => {
     }
 
     try {
+      // const fd = new FormData();
+
+      // // 👇 send full JSON as STRING
+      // const foodJson = {
+      //   name: form.name,
+      //   description: form.description,
+      //   price: Number(form.price),
+      //   category: form.category,
+      // };
+
       const fd = new FormData();
 
-      // 👇 send full JSON as STRING
       const foodJson = {
         name: form.name,
         description: form.description,
         price: Number(form.price),
         category: form.category,
       };
+      console.log(foodJson);
+      console.log(image);
+      fd.append(
+        "food",
+        new Blob([JSON.stringify(foodJson)], { type: "application/json" }),
+      );
 
-      fd.append("food", JSON.stringify(foodJson)); // MUST be "food"
-      fd.append("file", image); // MUST be "file"
-
-      // for (let [k, v] of fd.entries()) {
-      //   console.log(k, v);
-      // }
+      fd.append("file", image);
 
       await axios.post("http://localhost:8080/api/foods/add", fd, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
       alert("Food added");
 
       setShowModal(false);
@@ -123,30 +132,29 @@ const MenuManagement = () => {
       category: item.category,
     });
 
-    // show existing image
-    setPreviewImage(
-      item.imageUrl
-        ? `http://localhost:8080/images/view/${item.imageUrl}`
-        : null
-    );
+   
+    setPreviewImage(item.imageUrl || null);
 
     setImage(null); // only if user uploads new one
     setShowModal(true);
   };
 
   // ================= TOGGLE ACTIVE (UI ONLY) =================
-  const toggleActive =async (id,currentStatus) => {
+  const toggleActive = async (id, currentStatus) => {
     try {
-      await axios.patch(`http://localhost:8080/api/foods/status/${id}?active=${!currentStatus}`,{},{
-        headers: {
-          Authorization: `Bearer ${token}`,
+      await axios.patch(
+        `http://localhost:8080/api/foods/status/${id}?active=${!currentStatus}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
       fetchItems();
-      
     } catch (error) {
-       console.error(error);
-    alert("Status update failed");
+      console.error(error);
+      alert("Status update failed");
     }
   };
 
@@ -178,12 +186,16 @@ const MenuManagement = () => {
         category: form.category,
       };
 
-      fd.append("food", JSON.stringify(foodJson));
+      fd.append(
+        "food",
+        new Blob([JSON.stringify(foodJson)], { type: "application/json" }),
+      );
       if (image) fd.append("file", image); // optional
 
       await axios.put(`http://localhost:8080/api/foods/update/${editId}`, fd, {
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
         },
       });
 
@@ -209,7 +221,6 @@ const MenuManagement = () => {
     });
     setImage(null);
   };
-
 
   return (
     <div className="menu-page">
@@ -251,7 +262,7 @@ const MenuManagement = () => {
               }`}
               onClick={() =>
                 setCategoryFilter(
-                  categoryFilter === cat.name ? "All" : cat.name
+                  categoryFilter === cat.name ? "All" : cat.name,
                 )
               }
             >
@@ -281,12 +292,12 @@ const MenuManagement = () => {
           <tbody>
             {filteredItems.map((item) => (
               <tr key={item.id}>
-  
                 <td>
                   <div style={{ display: "flex", gap: 10 }}>
                     {item.imageUrl && (
+                    
                       <img
-                        src={`http://localhost:8080/images/view/${item.imageUrl}`}
+                        src={item.imageUrl}
                         alt=""
                         style={{
                           width: 45,

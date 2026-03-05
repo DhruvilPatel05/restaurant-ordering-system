@@ -19,5 +19,6 @@ public class FoodEntity {
     private double price;
     private String category;
     private boolean active;
-    private String imageUrl;   // GridFS image ID
+    private String imageUrl;
+    private String imagePublicId;
 }
