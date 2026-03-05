@@ -17,7 +17,7 @@ const TableOrders = () => {
    
     try {
       const res = await axios.get(
-        `http://localhost:8080/api/orders/table/${tableNo}`,
+        `${import.meta.env.VITE_API_URL}/api/orders/table/${tableNo}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

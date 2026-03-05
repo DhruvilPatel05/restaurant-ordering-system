@@ -12,7 +12,7 @@ const fetchAvailableTables = async () => {
     const token = localStorage.getItem("token");
 
     const res = await axios.get(
-  "http://localhost:8080/api/tables/available",
+  `${import.meta.env.VITE_API_URL}/api/tables/available`,
   {
     params: {
       date: form.date,

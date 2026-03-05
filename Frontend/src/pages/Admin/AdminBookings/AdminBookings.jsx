@@ -14,7 +14,7 @@ const AdminBookings = () => {
   const fetchBookingsByDate = async (date) => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/api/bookings/date/${date}`,{
+        `${import.meta.env.VITE_API_URL}/api/bookings/date/${date}`,{
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -28,7 +28,7 @@ const AdminBookings = () => {
   const fetchAllBookings = async () => {
   try {
     const res = await axios.get(
-      "http://localhost:8080/api/bookings/all",
+     `${import.meta.env.VITE_API_URL}/api/bookings/all`,
       {headers: {
         Authorization: `Bearer ${token}`,
       },

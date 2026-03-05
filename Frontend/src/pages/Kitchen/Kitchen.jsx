@@ -14,7 +14,7 @@ export default function Kitchen() {
   const updateStatus = async (id, nextStatus) => {
     try {
       await axios.put(
-        `http://localhost:8080/api/orders/${id}/status?status=${nextStatus}`,
+        `${import.meta.env.VITE_API_URL}/api/orders/${id}/status?status=${nextStatus}`,
         {},
         {
           headers: {
@@ -43,7 +43,7 @@ export default function Kitchen() {
   const fetchOrders = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:8080/api/orders/kitchen",
+       `${import.meta.env.VITE_API_URL}/api/orders/kitchen`,
         {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),

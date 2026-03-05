@@ -13,7 +13,7 @@ const Orders = () => {
   const fetchOrders = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:8080/api/orders",
+        `${import.meta.env.VITE_API_URL}/api/orders`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -62,7 +62,7 @@ useEffect(() => {
   const deleteOrder = async (id) => {
     if (!window.confirm("Delete this order?")) return;
 
-    await axios.delete(`http://localhost:8080/api/orders/${id}`, {
+    await axios.delete(`${import.meta.env.VITE_API_URL}/api/orders/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

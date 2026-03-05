@@ -21,7 +21,7 @@ const Tables = () => {
   // ================= FETCH TABLES =================
   const fetchTables = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/tables", {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/tables`, {
         headers: {
           Authorization: `Bearer ${token1}`,
         },
@@ -74,7 +74,7 @@ useEffect(() => {
       if (editingTable) {
         // UPDATE
         await axios.put(
-          `http://localhost:8080/api/tables/${editingTable.id}`,
+          `${import.meta.env.VITE_API_URL}/api/tables/${editingTable.id}`,
           form,
           {
             headers: {
@@ -84,7 +84,7 @@ useEffect(() => {
         );
       } else {
         // ADD
-        await axios.post("http://localhost:8080/api/tables", form, {
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/tables`, form, {
           headers: {
             Authorization: `Bearer ${token1}`,
           },
@@ -103,7 +103,7 @@ useEffect(() => {
   const handleDelete = async (id) => {
     if (window.confirm("Delete this table?")) {
       try {
-        await axios.delete(`http://localhost:8080/api/tables/${id}`, {
+        await axios.delete(`${import.meta.env.VITE_API_URL}/api/tables/${id}`, {
           headers: {
             Authorization: `Bearer ${token1}`,
           },
@@ -119,7 +119,7 @@ useEffect(() => {
       const tableToUpdate = tables.find((t) => t.id === id);
 
       await axios.put(
-        `http://localhost:8080/api/tables/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/tables/${id}`,
         {
           ...tableToUpdate,
           status: newStatus,

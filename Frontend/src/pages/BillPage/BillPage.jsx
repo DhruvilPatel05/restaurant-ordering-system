@@ -20,7 +20,7 @@ const BillPage = () => {
   const fetchOrders = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/api/orders/table/${tableNumber}`,
+        `${import.meta.env.VITE_API_URL}/api/orders/table/${tableNumber}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -45,7 +45,7 @@ const grandTotal = subtotal + sgst + cgst;
   const handlePayment = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:8080/api/orders/pay/${tableNumber}`,
+        `${import.meta.env.VITE_API_URL}/api/orders/pay/${tableNumber}`,
         { paymentMethod: selected },
         {
           headers: {

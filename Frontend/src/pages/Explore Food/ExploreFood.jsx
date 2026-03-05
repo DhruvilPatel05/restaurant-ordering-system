@@ -65,7 +65,7 @@ const ExploreFood = () => {
     const token = localStorage.getItem("token");
 
     await axios.put(
-      `http://localhost:8080/api/tables/occupy/${tableNo}`,
+      `${import.meta.env.VITE_API_URL}/api/tables/occupy/${tableNo}`,
       {},
       {
         headers: {

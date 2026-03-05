@@ -3,7 +3,7 @@ import "./Staff.css";
 import axios from "axios";
 
 const roles = ["ADMIN", "CHEF", "WAITER", "CASHIER"];
-const API_BASE = "http://localhost:8080/api/admin/staff";
+const API_BASE = `${import.meta.env.VITE_API_URL}/api/admin/staff`;
 const token = localStorage.getItem("token");
 
 const Staff = () => {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./MenuManagement.css";
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/foods/getAll";
+const API_URL = `${import.meta.env.VITE_API_URL}/api/foods/getAll`;
 const token = localStorage.getItem("token");
 const categories = [
   { id: 1, name: "Roti", icon: "🫓" },
@@ -99,7 +99,7 @@ const MenuManagement = () => {
 
       fd.append("file", image);
 
-      await axios.post("http://localhost:8080/api/foods/add", fd, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/foods/add`, fd, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -143,7 +143,7 @@ const MenuManagement = () => {
   const toggleActive = async (id, currentStatus) => {
     try {
       await axios.patch(
-        `http://localhost:8080/api/foods/status/${id}?active=${!currentStatus}`,
+       `${import.meta.env.VITE_API_URL}/api/foods/status/${id}?active=${!currentStatus}`,
         {},
         {
           headers: {
@@ -163,7 +163,7 @@ const MenuManagement = () => {
     if (!window.confirm("Delete this item?")) return;
 
     try {
-      await axios.delete(`http://localhost:8080/api/foods/delete/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/foods/delete/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -192,7 +192,7 @@ const MenuManagement = () => {
       );
       if (image) fd.append("file", image); // optional
 
-      await axios.put(`http://localhost:8080/api/foods/update/${editId}`, fd, {
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/foods/update/${editId}`, fd, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",

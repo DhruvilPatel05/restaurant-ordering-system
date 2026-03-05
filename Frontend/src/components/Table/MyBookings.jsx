@@ -19,7 +19,7 @@ const MyBookings = ({setTab }) => {
   const fetchBookings = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/api/bookings/user/${userId}`,
+        `${import.meta.env.VITE_API_URL}/api/bookings/user/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -37,7 +37,7 @@ const MyBookings = ({setTab }) => {
   const cancelBooking = async (id) => {
     try {
       await axios.put(
-        `http://localhost:8080/api/bookings/cancel/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/bookings/cancel/${id}`,
         {},
         {
           headers: {

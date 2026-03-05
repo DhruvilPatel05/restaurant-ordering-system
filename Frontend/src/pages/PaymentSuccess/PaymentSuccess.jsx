@@ -33,7 +33,7 @@ const downloadInvoice = async () => {
   try {
 
     const response = await axios.post(
-      "http://localhost:8080/api/orders/invoice",
+      `${import.meta.env.VITE_API_URL}/api/orders/invoice`,
       orderIds,   
       {
         responseType: "blob",
