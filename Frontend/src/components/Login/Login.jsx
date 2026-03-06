@@ -25,6 +25,7 @@ const Login = () => {
     e.preventDefault();
     try {
       // console.log("API URL =", import.meta.env.VITE_API_URL);
+      
      
       const reaponse = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/login`,
@@ -51,9 +52,9 @@ const Login = () => {
 
   if (role === "USER") {
     await loadCart(reaponse.data.token);
-    navigate("/");   // USER homepage
+    navigate("/"); 
   } else if (role === "ADMIN") {
-    navigate("/admin/dashboard");   // Admin dashboard
+    navigate("/admin/dashboard");  
   } else if (role === "CHEF") {
     navigate("/kitchen");
   } else {
