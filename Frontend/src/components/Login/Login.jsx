@@ -24,7 +24,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log("API URL =", import.meta.env.VITE_API_URL);
+      // console.log("API URL =", import.meta.env.VITE_API_URL);
      
       const reaponse = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/login`,
@@ -33,7 +33,7 @@ const Login = () => {
 
       if (reaponse.status === 200) {
         toast.success("Login successful!");
-        console.log("Login response:", reaponse.data);
+        // console.log("Login response:", reaponse.data);
 
         settoken(reaponse.data.token);
         localStorage.setItem("token", reaponse.data.token);
