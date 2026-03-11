@@ -24,6 +24,18 @@ public interface OrderRepository extends MongoRepository<OrderEntity, String> {
             String paymentStatus
     );
   List<OrderEntity> findByTableNumberAndPaymentStatus(int tableNumber, String paymentStatus);
+    List<OrderEntity> findByRestaurantIdOrderByCreatedAtDesc(String restaurantId);
+
+    List<OrderEntity> findByRestaurantIdAndTableNumberAndPaymentStatusOrderByCreatedAtDesc(
+            String restaurantId,
+            int tableNumber,
+            String paymentStatus
+    );
+
+    List<OrderEntity> findByRestaurantIdAndUserIdOrderByCreatedAtDesc(
+            String restaurantId,
+            String userId
+    );
 
 
 

@@ -7,4 +7,5 @@ public class TableRequest {
     private int tableNumber;
     private int seats;
     private String status;
+    private String restaurantId;
 }

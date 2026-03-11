@@ -14,7 +14,9 @@ import java.util.Map;
 @Builder
 public class CartResponse {
 
+
     private String id;//Cart id
+    private String restaurantId;
     private String userId;
     private String tableNo;
     // foodId -> quantity

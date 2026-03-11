@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./MenuManagement.css";
 import axios from "axios";
 
-const API_URL = `${import.meta.env.VITE_API_URL}/api/foods/getAll`;
+const API_URL = `${import.meta.env.VITE_API_URL}/api/foods/restaurant`;
 const token = localStorage.getItem("token");
 const categories = [
   { id: 1, name: "Roti", icon: "🫓" },
@@ -39,11 +39,15 @@ const MenuManagement = () => {
   // ================= FETCH ITEMS =================
   const fetchItems = async () => {
     try {
-      const res = await axios.get(API_URL, {
+      const restaurantId = localStorage.getItem("restaurantId");
+     const res = await axios.get(
+      `${import.meta.env.VITE_API_URL}/api/foods/restaurant/${restaurantId}`,
+      {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      });
+      }
+    );
 
       // console.log(res);
       setItems(res.data);
@@ -89,9 +93,11 @@ const MenuManagement = () => {
         description: form.description,
         price: Number(form.price),
         category: form.category,
+        restaurantId: localStorage.getItem("restaurantId"),
+
       };
-      console.log(foodJson);
-      console.log(image);
+      // console.log(foodJson);
+      // console.log(image);
       fd.append(
         "food",
         new Blob([JSON.stringify(foodJson)], { type: "application/json" }),
@@ -184,6 +190,7 @@ const MenuManagement = () => {
         description: form.description,
         price: Number(form.price),
         category: form.category,
+         restaurantId: localStorage.getItem("restaurantId"),
       };
 
       fd.append(

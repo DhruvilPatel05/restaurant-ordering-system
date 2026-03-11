@@ -26,4 +26,5 @@ public class CartEntity {
         this.userId = userId;
         this.items = items;
     }
+    private String restaurantId;
 }

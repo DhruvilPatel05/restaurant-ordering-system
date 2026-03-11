@@ -9,14 +9,14 @@ public interface TableService {
 
     TableResponse addTable(TableRequest request);
 
-    List<TableResponse> getAllTables();
-    List<TableResponse> getAvailableTables(String date, String time,int guests);
+    List<TableResponse> getAllTables(String restaurantId);
+    List<TableResponse> getAvailableTables(String restaurantId,String date, String time,int guests);
 
 
     TableResponse updateTable(String id, TableRequest request);
 
     void deleteTable(String id);
-    TableResponse occupyTable(int tableNumber);
+    TableResponse occupyTable(String restaurantId,int tableNumber);
 
 
 }

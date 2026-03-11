@@ -9,6 +9,7 @@ import axios from "axios";
 //navbar component
 const Menubar = () => {
   const userEmail = localStorage.getItem("userEmail");
+  const restaurantId = localStorage.getItem("restaurantId");
   
 
   // Extract name from email
@@ -34,14 +35,14 @@ const Menubar = () => {
 
       if (token) {
         await axios.put(
-         `${import.meta.env.VITE_API_URL}/api/cart/clear-table`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+  `${import.meta.env.VITE_API_URL}/api/cart/clear-table/${restaurantId}`,
+  {},
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
         // console.log("✅ Table cleared from DB");
       }
     } catch (error) {

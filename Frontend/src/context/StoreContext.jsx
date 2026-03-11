@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 export const StoreContext = createContext([]);
 
 const API = import.meta.env.VITE_API_URL;
+const restaurantId = localStorage.getItem("restaurantId");
 // inside StoreContext component
 
 export const StoreContextProvider = (props) => {
@@ -36,11 +37,14 @@ export const StoreContextProvider = (props) => {
     }));
 
     await axios.post(
-      // "http://localhost:8080/api/cart",
-      `${API}/api/cart`,
-      { foodId, tableNo },
-      { headers: { Authorization: `Bearer ${token}` } },
-    );
+  `${API}/api/cart`,
+  {
+    foodId,
+    tableNo,
+    restaurantId,
+  },
+  { headers: { Authorization: `Bearer ${token}` } }
+);
   };
 
   const decreaseQuantity = async (foodId) => {
@@ -50,11 +54,13 @@ export const StoreContextProvider = (props) => {
     }));
 
     await axios.post(
-      // "http://localhost:8080/api/cart/remove",
-      `${API}/api/cart/remove`,
-      { foodId },
-      { headers: { Authorization: `Bearer ${token}` } },
-    );
+  `${API}/api/cart/remove`,
+  {
+    foodId,
+    restaurantId,
+  },
+  { headers: { Authorization: `Bearer ${token}` } }
+);
   };
   //   const removeItem = (foodId) => {
   //     setquantities((prevQuantities) => {
@@ -68,9 +74,9 @@ export const StoreContextProvider = (props) => {
       const token = localStorage.getItem("token");
 
       const response = await axios.post(
-        // "http://localhost:8080/api/cart/remove/all",
+     
         `${API}/api/cart/remove/all`,
-        { foodId },
+        { foodId ,restaurantId},
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -86,21 +92,25 @@ export const StoreContextProvider = (props) => {
 
   const loadCart = async (token) => {
     const response = await axios.get(
-      // "http://localhost:8080/api/cart",
-      `${API}/api/cart`,
-      { headers: { Authorization: `Bearer ${token}` } },
-    );
+  `${API}/api/cart/${restaurantId}`,
+  { headers: { Authorization: `Bearer ${token}` } }
+);
     setquantities(response.data.items);
   };
 
   const fetchFoodLIst = async (token1) => {
+    // console.log("Fetching food list with token:", token1); // Debugging line
+    // console.log("Restaurant ID:", restaurantId); // Debugging line
     try {
       // const response = await axios.get("http://localhost:8080/api/foods/getAll");
-      const response = await axios.get(`${API}/api/foods/getAll`, {
-        headers: {
-          Authorization: `Bearer ${token1}`,
-        },
-      });
+      const response = await axios.get(`${API}/api/foods/restaurant/${restaurantId}`, {
+  headers: {
+    Authorization: `Bearer ${token1}`,
+  },
+});
+// console.log("API call made to fetch food list"); // Debugging line
+// console.log("API Response:", response); // Debugging line
+
       if (response.status === 200) {
         setfoodList(response.data);
         // console.log("Food list fetched successfully");

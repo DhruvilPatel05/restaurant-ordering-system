@@ -10,6 +10,13 @@ public interface TableRepository extends MongoRepository<TableEntity, String> {
     List<TableEntity> findByStatus(String status);
     Optional<TableEntity> findByTableNumber(int tableNumber);
 
+    List<TableEntity> findByRestaurantId(String restaurantId);
+
+    Optional<TableEntity> findByRestaurantIdAndTableNumber(
+            String restaurantId,
+            int tableNumber
+    );
+
 
 
 

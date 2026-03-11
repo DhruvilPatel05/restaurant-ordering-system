@@ -10,13 +10,21 @@ const ExploreFood = () => {
   const navigate = useNavigate();
   const [category, setCategory] = useState("");
   const [searchText, setSearchText] = useState("");
-  const [showTableModal, setShowTableModal] = useState(true);
-  const [tableNo, setTableNo] = useState("");
+  const [showTableModal, setShowTableModal] = useState(!localStorage.getItem("tableNo"));
+  const [tableNo, setTableNo] = useState(localStorage.getItem("tableNo") || "");
   const [loading, setLoading] = useState(true);
 
+
+  const restaurantId = localStorage.getItem("restaurantId");
+  // const tableNo = localStorage.getItem("tableNo");
+
+  useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
   // ✅ Check Login
   useEffect(() => {
     const token = localStorage.getItem("token");
+    
 
     if (!token) {
       toast.warning("Please login to continue.");
@@ -30,9 +38,12 @@ const ExploreFood = () => {
 
   const fetchCart = async (token) => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/cart`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/cart/${restaurantId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
 
       const backendTable = res.data.tableNumber;
       const localTable = parseInt(localStorage.getItem("tableNo"));
@@ -55,49 +66,47 @@ const ExploreFood = () => {
     }
   };
 
- const handleSaveTable = async () => {
-  if (!tableNo) {
-    toast.error("Please enter table number");
-    return;
-  }
+  const handleSaveTable = async () => {
+    if (!tableNo) {
+      toast.error("Please enter table number");
+      return;
+    }
 
-  try {
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    await axios.put(
-      `${import.meta.env.VITE_API_URL}/api/tables/occupy/${tableNo}`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      await axios.put(
+        `${import.meta.env.VITE_API_URL}/api/tables/${restaurantId}/occupy/${tableNo}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      }
-    );
+      );
 
-    localStorage.setItem("tableNo", tableNo);
-    setShowTableModal(false);
+      localStorage.setItem("tableNo", tableNo);
+      setShowTableModal(false);
 
-    toast.success("Table occupied successfully!");
-
-  } catch (err) {
-    toast.error("Invalid table number or already occupied");
-  }
-};
-
+      toast.success("Table occupied successfully!");
+    } catch (err) {
+      console.error("Failed to occupy table", err);
+      toast.error("Invalid table number or already occupied");
+    }
+  };
 
   //handleSearch
 
   const handleSearch = (e) => {
     e.preventDefault();
     // Later you can filter foodList using these values
-    console.log(category, searchText);
+    // console.log(category, searchText);
   };
 
   if (loading) return null;
 
   return (
     <>
-      
       {showTableModal && (
         <div className="table-modal-overlay">
           <div className="table-modal">

@@ -17,4 +17,5 @@ public class TableEntity {
     private int tableNumber;
     private int seats;
     private String status; // AVAILABLE, OCCUPIED, RESERVED
+    private String restaurantId;
 }

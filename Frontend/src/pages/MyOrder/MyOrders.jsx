@@ -9,11 +9,12 @@ const MyOrders = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         const res = await axios.get(
-          `${API}/api/orders/user/${localStorage.getItem("userId")}`,
+          `${API}/api/orders/user/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

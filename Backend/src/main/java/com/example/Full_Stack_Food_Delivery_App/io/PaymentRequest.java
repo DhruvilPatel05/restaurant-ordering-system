@@ -5,4 +5,7 @@ import lombok.Data;
 @Data
 public class PaymentRequest {
     private String paymentMethod;// CASH, UPI, CARD
+    private String couponCode;   // NEW
+
+    private double discount;
 }

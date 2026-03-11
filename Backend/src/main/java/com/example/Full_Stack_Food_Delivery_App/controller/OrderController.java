@@ -31,9 +31,11 @@ public class OrderController {
     }
 
     // Admin: get all orders
-    @GetMapping
-    public ResponseEntity<List<OrderResponse>> getAllOrders() {
-        return ResponseEntity.ok(orderService.getAllOrders());
+    @GetMapping("/restaurant/{restaurantId}")
+    public ResponseEntity<List<OrderResponse>> getAllOrders(
+            @PathVariable String restaurantId) {
+
+        return ResponseEntity.ok(orderService.getAllOrders(restaurantId));
     }
 
     @DeleteMapping("/{id}")
@@ -48,30 +50,37 @@ public class OrderController {
         OrderResponse response = orderService.updateOrderStatus(id,status);
         return ResponseEntity.ok(response);
     }
-    @GetMapping("/kitchen")
-    public ResponseEntity<List<OrderResponse>> getKitchenOrders() {
-        return ResponseEntity.ok(orderService.getKitchenOrders());
+    @GetMapping("/kitchen/{restaurantId}")
+    public ResponseEntity<List<OrderResponse>> getKitchenOrders(
+            @PathVariable String restaurantId) {
+
+        return ResponseEntity.ok(
+                orderService.getKitchenOrders(restaurantId)
+        );
     }
     @GetMapping("/last/{userId}")
     public ResponseEntity<OrderResponse> getLastOrder(@PathVariable String userId) {
         return ResponseEntity.ok(orderService.getLastOrder(userId));
 
     }
-    @GetMapping("/table/{tableNumber}")
+    @GetMapping("/{restaurantId}/table/{tableNumber}")
     public ResponseEntity<List<OrderResponse>> getOrdersByTable(
+            @PathVariable String restaurantId,
             @PathVariable int tableNumber) {
 
         return ResponseEntity.ok(
-                orderService.getOrdersByTable(tableNumber)
+                orderService.getOrdersByTable(restaurantId, tableNumber)
         );
     }
-    @PutMapping("/pay/{tableNumber}")
+    @PutMapping("/{restaurantId}/pay/{tableNumber}")
     public ResponseEntity<List<String>> payTable(
+            @PathVariable String restaurantId,
             @PathVariable int tableNumber,
             @RequestBody PaymentRequest request) {
 
         List<OrderEntity> paidOrders =
-                orderService.payAllOrders(tableNumber, request.getPaymentMethod());
+                orderService.payAllOrders(restaurantId, tableNumber, request.getPaymentMethod(),request.getCouponCode(),
+                        request.getDiscount());
 
         List<String> orderIds = paidOrders.stream()
                 .map(OrderEntity::getId)
@@ -104,10 +113,5 @@ public class OrderController {
                 .header("Content-Type", "application/pdf")
                 .body(pdf);
     }
-
-
-
-
-
 
 }

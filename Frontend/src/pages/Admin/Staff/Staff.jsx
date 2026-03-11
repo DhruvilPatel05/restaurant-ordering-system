@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import "./Staff.css";
 import axios from "axios";
 
-const roles = ["ADMIN", "CHEF", "WAITER", "CASHIER"];
+const roles = ["RESTAURANT_ADMIN", "CHEF", "WAITER", "CASHIER"];
+const restaurantId = localStorage.getItem("restaurantId");
 const API_BASE = `${import.meta.env.VITE_API_URL}/api/admin/staff`;
 const token = localStorage.getItem("token");
 
@@ -25,13 +26,15 @@ const Staff = () => {
     try {
       setLoading(true);
 
-      const res = await axios.get(API_BASE, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/admin/staff/${restaurantId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: searchText ? { search: searchText } : {},
         },
-        params: searchText ? { search: searchText } : {},
-      });
-
+      );
       setStaff(res.data);
     } catch (err) {
       console.error("Failed to fetch staff", err);
@@ -75,11 +78,18 @@ const Staff = () => {
     }
 
     try {
-      const res = await axios.post(API_BASE, form, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/admin/staff`,
+        {
+          ...form,
+          restaurantId: restaurantId,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
 
       setStaff((prev) => [...prev, res.data]);
       setShowModal(false);
@@ -92,7 +102,7 @@ const Staff = () => {
         active: true,
       });
     } catch (err) {
-      console.log(form);
+      // console.log(form);
       console.error("Failed to add staff", err);
     }
   };
@@ -126,30 +136,39 @@ const Staff = () => {
     setShowModal(true);
   };
 
-  const handleUpdateStaff = async () => {
-    try {
-      const res = await axios.put(`${API_BASE}/${editingId}`, form, {
+ const handleUpdateStaff = async () => {
+  try {
+    const res = await axios.put(
+      `${API_BASE}/${editingId}`,
+      {
+        ...form,
+        restaurantId,
+      },
+      {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      });
+      }
+    );
 
-      setStaff((prev) => prev.map((s) => (s.id === editingId ? res.data : s)));
+    setStaff((prev) =>
+      prev.map((s) => (s.id === editingId ? res.data : s))
+    );
 
-      setShowModal(false);
-      setEditingId(null);
+    setShowModal(false);
+    setEditingId(null);
 
-      setForm({
-        name: "",
-        email: "",
-        phone: "",
-        role: "",
-        active: true,
-      });
-    } catch (err) {
-      console.error("Failed to update staff", err);
-    }
-  };
+    setForm({
+      name: "",
+      email: "",
+      phone: "",
+      role: "",
+      active: true,
+    });
+  } catch (err) {
+    console.error("Failed to update staff", err);
+  }
+};
 
   return (
     <div className="staff-page">

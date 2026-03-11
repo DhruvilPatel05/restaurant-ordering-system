@@ -14,6 +14,7 @@ import java.util.Map;
 @Builder
 public class CartRequest {
 
+    private String restaurantId;
     private String foodId;
     private String tableNo;
 

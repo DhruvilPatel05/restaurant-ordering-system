@@ -32,6 +32,8 @@ import TableOrders from "./pages/TableOrders/TableOrders";
 import BillPage from "./pages/BillPage/BillPage";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
+import QRLanding from "./pages/QRLanding/QRLanding";
+import AddCoupon from "./pages/Admin/AddCoupon/AddCoupon";
 // Dummy pages (replace with your real pages)
 // const Dashboard = () => <h1>Dashboard Page</h1>;
 // const Tables = () => <h1>Tables Page</h1>;
@@ -75,16 +77,18 @@ const App = () => {
         <Route
           path="/kitchen"
           element={
-            <ProtectedRoute allowedRoles={["ADMIN", "CHEF"]}>
+            <ProtectedRoute allowedRoles={["RESTAURANT_ADMIN", "CHEF"]}>
               <Kitchen />
             </ProtectedRoute>
           }
         />
 
+        <Route path="/r/:restaurantId/t/:tableNumber" element={<QRLanding />} />
+
         <Route
           path="/my-order"
           element={
-            <ProtectedRoute allowedRoles={["USER", "ADMIN"]}>
+            <ProtectedRoute allowedRoles={["USER", "RESTAURANT_ADMIN"]}>
               <MyOrders />
             </ProtectedRoute>
           }
@@ -94,7 +98,7 @@ const App = () => {
         <Route
           path="/admin"
           element={
-            <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <ProtectedRoute allowedRoles={["RESTAURANT_ADMIN"]}>
               <AdminLayout />
             </ProtectedRoute>
           }
@@ -106,6 +110,7 @@ const App = () => {
           <Route path="kitchen" element={<Kitchen />} />
           <Route path="staff" element={<Staff />} />
           <Route path="adminBookings" element={<Analytics />} />
+          <Route path="addCoupon" element={<AddCoupon />} />
         </Route>
 
           <Route path="/change-password" element={<ChangePassword />} />

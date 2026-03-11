@@ -21,7 +21,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Register Data:", data);
+    // console.log("Register Data:", data);
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/register`,data);
       if (response.status === 201) {

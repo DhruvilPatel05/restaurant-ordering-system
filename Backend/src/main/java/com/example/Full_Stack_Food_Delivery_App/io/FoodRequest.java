@@ -14,5 +14,6 @@ public class FoodRequest {
     private double price;
     private String category;
     private Boolean active;
+    private String restaurantId;
 
 }

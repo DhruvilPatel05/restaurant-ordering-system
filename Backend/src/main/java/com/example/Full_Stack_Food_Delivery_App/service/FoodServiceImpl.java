@@ -47,9 +47,9 @@ public class FoodServiceImpl implements FoodService {
 
 
     @Override
-    public List<FoodResponse> readFood() {
+    public List<FoodResponse> readFood(String restaurantId) {
         List<FoodEntity> databaseentry = foodRepository.findAll();
-        return foodRepository.findAll()
+        return foodRepository.findByRestaurantId(restaurantId)
                 .stream()
                 .map(this::convertToResponse)
                 .toList();
@@ -57,7 +57,7 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    public FoodResponse readFood(String id) {
+    public FoodResponse readFoodone(String id) {
         FoodEntity food = foodRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND,
                 "Food not found with id: " + id
@@ -125,6 +125,7 @@ public class FoodServiceImpl implements FoodService {
         return FoodEntity.builder()
                 .name(request.getName())
                 .description(request.getDescription())
+                .restaurantId(request.getRestaurantId())
                 .price(request.getPrice())
                 .category(request.getCategory())
                 .imageUrl(imageUrl)

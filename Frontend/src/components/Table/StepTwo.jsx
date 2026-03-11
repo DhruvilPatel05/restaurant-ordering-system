@@ -26,7 +26,7 @@ const fetchAvailableTables = async () => {
   }
 );
 
-    console.log("Available tables:", res.data);
+    // console.log("Available tables:", res.data);
 
     setTables(res.data);
 

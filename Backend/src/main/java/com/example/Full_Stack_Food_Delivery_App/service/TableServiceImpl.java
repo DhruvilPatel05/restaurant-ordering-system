@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class TableServiceImpl implements TableService{
@@ -21,6 +22,7 @@ public class TableServiceImpl implements TableService{
     public TableResponse addTable(TableRequest request) {
         TableEntity table = TableEntity.builder()
                 .tableNumber(request.getTableNumber())
+                .restaurantId(request.getRestaurantId())
                 .seats(request.getSeats())
                 .status(request.getStatus())
                 .build();
@@ -30,19 +32,24 @@ public class TableServiceImpl implements TableService{
     }
 
     @Override
-    public List<TableResponse> getAllTables() {
-        return tableRepository.findAll()
+    public List<TableResponse> getAllTables(String restaurantId) {
+
+        return tableRepository.findByRestaurantId(restaurantId)
                 .stream()
                 .map(this::convertToResponse)
                 .toList();
     }
 
     @Override
-    public List<TableResponse> getAvailableTables(String date, String time, int guests) {
+    public List<TableResponse> getAvailableTables(
+            String restaurantId,
+            String date,
+            String time,
+            int guests) {
 
-        List<TableEntity> allTables = tableRepository.findAll();
+        List<TableEntity> allTables =
+                tableRepository.findByRestaurantId(restaurantId);
 
-       // Get all bookings for selected date/time with BOOKED status
         List<TableBookingEntity> bookedTables =
                 tableBookingRepository.findByDateAndTimeAndStatus(
                         date, time, "BOOKED");
@@ -53,13 +60,11 @@ public class TableServiceImpl implements TableService{
 
         return allTables.stream()
                 .filter(table ->
-                      //  "AVAILABLE".equalsIgnoreCase(table.getStatus()) &&   // 🔥 ADD THIS
-                                !bookedTableIds.contains(table.getId()) &&
+                        !bookedTableIds.contains(table.getId()) &&
                                 table.getSeats() >= guests
                 )
                 .map(this::convertToResponse)
                 .toList();
-
     }
 
     @Override
@@ -69,7 +74,7 @@ public class TableServiceImpl implements TableService{
                         HttpStatus.NOT_FOUND, "Table not found"));
 
         table.setTableNumber(request.getTableNumber());
-//        table.setSeats(request.getSeats());
+        table.setSeats(request.getSeats());
         table.setStatus(request.getStatus());
 
         TableEntity saved = tableRepository.save(table);
@@ -88,19 +93,14 @@ public class TableServiceImpl implements TableService{
     }
 
     @Override
-    public TableResponse occupyTable(int tableNumber) {
+    public TableResponse occupyTable(String restaurantId, int tableNumber) {
 
-
-        TableEntity table = tableRepository.findByTableNumber(tableNumber)
+        TableEntity table = tableRepository
+                .findByRestaurantIdAndTableNumber(restaurantId, tableNumber)
                 .orElseThrow(() -> new RuntimeException("Table not found"));
 
-
-        if (table == null) {
-            throw new RuntimeException("Table not found");
-        }
-
         if (!table.getStatus().equals("AVAILABLE")) {
-            throw new RuntimeException("Table already occupied or reserved");
+            throw new RuntimeException("Table already occupied");
         }
 
         table.setStatus("OCCUPIED");
@@ -109,7 +109,6 @@ public class TableServiceImpl implements TableService{
 
         return convertToResponse(saved);
     }
-
 
 
 

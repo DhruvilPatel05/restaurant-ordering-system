@@ -5,9 +5,9 @@ import com.example.Full_Stack_Food_Delivery_App.io.CartResponse;
 
 public interface CartService {
      CartResponse addTocart(CartRequest request);
-     CartResponse getCart();
-     void clearCart();
+     CartResponse getCart(String restaurantId);
+     void clearCart(String restaurantId);
      CartResponse removeFromCart(CartRequest request);
     CartResponse removeAllFromCart(CartRequest request);
-    void clearTableNo();
+    void clearTableNo(String restaurantId);
 }

@@ -10,6 +10,7 @@ export default function Kitchen() {
   const [orders, setOrders] = useState([]);
   const [activeFilter, setActiveFilter] = useState("all");
   const token = localStorage.getItem("token");
+  const restaurantId = localStorage.getItem("restaurantId");
 
   const updateStatus = async (id, nextStatus) => {
     try {
@@ -42,14 +43,14 @@ export default function Kitchen() {
  useEffect(() => {
   const fetchOrders = async () => {
     try {
-      const res = await axios.get(
-       `${import.meta.env.VITE_API_URL}/api/orders/kitchen`,
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        }
-      );
+     const res = await axios.get(
+  `${import.meta.env.VITE_API_URL}/api/orders/kitchen/${restaurantId}`,
+  {
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem("token"),
+    },
+  }
+);
       setOrders(res.data);
     } catch (err) {
       console.log(err);

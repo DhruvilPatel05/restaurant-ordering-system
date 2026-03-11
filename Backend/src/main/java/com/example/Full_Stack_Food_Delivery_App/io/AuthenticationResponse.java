@@ -13,4 +13,5 @@ public class AuthenticationResponse {
     private String email;
     private String token;
     private String role; // ADMIN or USER
+    private String restaurantId;
 }

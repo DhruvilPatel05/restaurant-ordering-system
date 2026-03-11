@@ -181,7 +181,55 @@
 .bill-page .pay-btn:hover {
   transform: translateY(-2px);
 }
+.coupon-box{
+  display:flex;
+  align-items:center;
+  border:1px solid #ddd;
+  border-radius:12px;
+  overflow:hidden;
+  margin:12px 0;
+}
 
+.coupon-box input{
+  flex:1;
+  border:none;
+  padding:12px;
+  font-size:15px;
+  outline:none;
+}
+
+.apply-btn{
+  padding:12px 18px;
+  border:none;
+  background:#ff6b00;
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.apply-btn:hover{
+  background:#e55d00;
+}
+
+.apply-btn.applied{
+  background:#2e7d32;
+}
+
+.apply-btn:disabled{
+  cursor:not-allowed;
+}
+
+.coupon-success{
+  font-size:14px;
+  margin-top:6px;
+  color:#444;
+}
+
+.applied-text{
+  color:#2e7d32;
+  font-weight:600;
+}
 @media (max-width: 480px) {
 
   .bill-page {

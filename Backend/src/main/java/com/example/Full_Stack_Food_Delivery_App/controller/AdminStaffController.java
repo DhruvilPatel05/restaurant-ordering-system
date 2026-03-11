@@ -25,12 +25,13 @@ public class AdminStaffController {
         return staffService.addStaff(request);
     }
 
-    @GetMapping
+    @GetMapping("/{restaurantId}")
     public List<StaffResponse> getAllStaff(
+            @PathVariable String restaurantId,
             @RequestParam(required = false) String search) {
-        return staffService.getAllStaff(search);
-    }
 
+        return staffService.getAllStaff(restaurantId, search);
+    }
     @PatchMapping("/{id}/status")
     public StaffResponse updateStatus(
             @PathVariable String id,

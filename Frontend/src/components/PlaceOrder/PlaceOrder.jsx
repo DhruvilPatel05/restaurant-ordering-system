@@ -9,7 +9,7 @@ import { useEffect } from "react";
 const PlaceOrder = () => {
   const { foodList, quantities, setquantities } = useContext(StoreContext);
   const navigate = useNavigate();
-
+  const restaurantId = localStorage.getItem("restaurantId");
   // ---------------- FORM STATE ----------------
   const [formData, setFormData] = useState({
     firstName: "",
@@ -52,6 +52,7 @@ const PlaceOrder = () => {
 
       const orderPayload = {
         userId: userId,
+        restaurantId: restaurantId,
         customerName: `${formData.firstName} ${formData.lastName}`,
         userAddress: formData.address,
         email: formData.email,
@@ -79,7 +80,7 @@ const PlaceOrder = () => {
 
       toast.success("Order placed successfully 🎉");
 
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/cart`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/cart/${restaurantId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -15,6 +15,8 @@ const AdminLayout = () => {
     ? "Staff"
     : location.pathname.includes("analytics")
     ? "Analytics"
+     : location.pathname.includes("addCoupon")
+    ? "Coupons"
     : "Dashboard";
 
       const userEmail = localStorage.getItem("userEmail");
@@ -55,6 +57,10 @@ const AdminLayout = () => {
         <NavLink to="/admin/adminBookings" className="menu-item">
           AdminBookings
         </NavLink>
+
+        <NavLink to="/admin/addCoupon" className="menu-item">
+  Coupons
+</NavLink>
       </aside>
 
       {/* Right Side */}

@@ -1,4 +1,3 @@
-
 import React from "react";
 import "./Home.css";
 import { Link } from "react-router-dom";
@@ -21,31 +20,28 @@ const Home = () => {
           dashboard and smart analytics – everything in one platform.
         </p>
 
-       <div className="hero-buttons">
+        <div className="hero-buttons">
+          {/* USER & ADMIN can see menu */}
+          {(role === "USER" || role === "RESTAURANT_ADMIN") && (
+            <Link to="/explore-food">
+              <button className="primary-button">🍽 Explore Menu</button>
+            </Link>
+          )}
 
-  {/* USER & ADMIN can see menu */}
-  {(role === "USER" || role === "ADMIN") && (
-    <Link to="/explore-food">
-      <button className="primary-button">🍽 Explore Menu</button>
-    </Link>
-  )}
+          {/* ADMIN only */}
+          {role === "RESTAURANT_ADMIN" && (
+            <Link to="/admin/dashboard">
+              <button className="secondary-button">Admin Dashboard</button>
+            </Link>
+          )}
 
-  {/* ADMIN only */}
-  {role === "ADMIN" && (
-    <Link to="/admin/dashboard">
-      <button className="secondary-button">Admin Dashboard</button>
-    </Link>
-  )}
-
-  {/* CHEF or ADMIN */}
-  {(role === "CHEF" || role === "ADMIN") && (
-    <Link to="/kitchen">
-      <button className="secondary-button">Kitchen Display</button>
-    </Link>
-  )}
-
-</div>
-
+          {/* CHEF or ADMIN */}
+          {(role === "CHEF" || role === "RESTAURANT_ADMIN") && (
+            <Link to="/kitchen">
+              <button className="secondary-button">Kitchen Display</button>
+            </Link>
+          )}
+        </div>
       </section>
 
       {/* ================= FEATURES ================= */}

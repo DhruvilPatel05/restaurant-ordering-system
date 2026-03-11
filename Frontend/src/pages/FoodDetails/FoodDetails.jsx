@@ -23,7 +23,7 @@ const FoodDetails = () => {
       });
       if (res.status === 200) {
         setdata(res.data);
-        console.log(data);
+        // console.log(data);
         // console.log("Food details fetched successfully11111111");
         // console.log(res.data.imageUrl);
       }

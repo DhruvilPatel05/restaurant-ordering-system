@@ -21,4 +21,5 @@ public class FoodEntity {
     private boolean active;
     private String imageUrl;
     private String imagePublicId;
+    private String restaurantId;
 }

@@ -25,6 +25,7 @@ public class StaffServiceImpl implements StaffService{
                 .name(request.getName())
                 .email(request.getEmail())
                 .phone(request.getPhone())
+                .restaurantId(request.getRestaurantId())
                 .password(passwordEncoder.encode("123456"))
                 .role(Role.valueOf(request.getRole().toUpperCase()))
                 .active(request.isActive())
@@ -36,12 +37,16 @@ public class StaffServiceImpl implements StaffService{
     }
 
     @Override
-    public List<StaffResponse> getAllStaff(String search) {
+    public List<StaffResponse> getAllStaff(String restaurantId, String search) {
 
         List<UserEntity> staffList =
                 (search == null || search.isEmpty())
-                        ? userRepository.findByRoleNot(Role.USER)
-                        : userRepository.findByNameContainingIgnoreCaseAndRoleNot(search, Role.USER);
+                        ? userRepository.findByRestaurantIdAndRoleNot(restaurantId, Role.USER)
+                        : userRepository.findByRestaurantIdAndNameContainingIgnoreCaseAndRoleNot(
+                        restaurantId,
+                        search,
+                        Role.USER
+                );
 
         return staffList.stream()
                 .map(this::mapToResponse)

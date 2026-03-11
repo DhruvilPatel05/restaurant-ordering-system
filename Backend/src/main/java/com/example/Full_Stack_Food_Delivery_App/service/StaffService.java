@@ -9,7 +9,7 @@ public interface StaffService {
 
     StaffResponse addStaff(StaffRequest request);
 
-    List<StaffResponse> getAllStaff(String search);
+    List<StaffResponse> getAllStaff(String restaurantId,String search);
 
     StaffResponse updateStatus(String id, boolean active);
 

@@ -9,6 +9,7 @@ const TableOrders = () => {
   const [orders, setOrders] = useState([]);
   const tableNo = parseInt(localStorage.getItem("tableNo"));
   const token = localStorage.getItem("token");
+  const restaurantId = localStorage.getItem("restaurantId");
 
   useEffect(() => {
     fetchOrders();
@@ -17,13 +18,13 @@ const TableOrders = () => {
    
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/orders/table/${tableNo}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
+  `${import.meta.env.VITE_API_URL}/api/orders/${restaurantId}/table/${tableNo}`,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
     //   console.log("API Response:", res.data); // Debugging line
 
       // Filter by table number

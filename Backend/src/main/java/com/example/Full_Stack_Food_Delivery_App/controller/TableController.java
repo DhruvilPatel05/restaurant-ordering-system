@@ -20,9 +20,9 @@ public class TableController {
         return tableService.addTable(request);
     }
 
-    @GetMapping
-    public List<TableResponse> getAll() {
-        return tableService.getAllTables();
+    @GetMapping("/{restaurantId}")
+    public List<TableResponse> getAll(@PathVariable String restaurantId) {
+        return tableService.getAllTables(restaurantId);
     }
 
     @PutMapping("/{id}")
@@ -37,17 +37,22 @@ public class TableController {
         tableService.deleteTable(id);
     }
 
-    @GetMapping("/available")
+    @GetMapping("/available/{restaurantId}")
     public List<TableResponse> getAvailableTables(
+            @PathVariable String restaurantId,
             @RequestParam String date,
             @RequestParam String time,
             @RequestParam int guests) {
-        return tableService.getAvailableTables(date, time,guests);
+
+        return tableService.getAvailableTables(restaurantId,date,time,guests);
     }
 
-    @PutMapping("/occupy/{tableNumber}")
-    public TableResponse occupyTable(@PathVariable int tableNumber) {
-        return tableService.occupyTable(tableNumber);
+    @PutMapping("/{restaurantId}/occupy/{tableNumber}")
+    public TableResponse occupyTable(
+            @PathVariable String restaurantId,
+            @PathVariable int tableNumber) {
+
+        return tableService.occupyTable(restaurantId,tableNumber);
     }
 
 

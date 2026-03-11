@@ -31,4 +31,6 @@ public class UserEntity {
     //for admin
     private String phone;    // ✅ add
     private boolean active;
+
+    private String restaurantId;//for  admin and staff.
 }

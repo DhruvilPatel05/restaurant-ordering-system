@@ -26,36 +26,37 @@ const Dashboard = () => {
   const [totalTables, setTotalTables] = useState(0);
 
   const token = localStorage.getItem("token");
+  const restaurantId = localStorage.getItem("restaurantId");
 
   const fetchData = async () => {
     try {
       const ordersRes = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/orders`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
+  `${import.meta.env.VITE_API_URL}/api/orders/restaurant/${restaurantId}`,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
       setOrders(ordersRes.data);
 
       const foodRes = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/foods/getAll`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+  `${import.meta.env.VITE_API_URL}/api/foods/restaurant/${restaurantId}`,
+  {
+    headers: { Authorization: `Bearer ${token}` },
+  }
+);
 
       setFoods(foodRes.data);
       // console.log(foodRes.data);
       // console.log(ordersRes.data);
 
 
-     const tableRes = await axios.get(
-  `${import.meta.env.VITE_API_URL}/api/tables`,
+const tableRes = await axios.get(
+  `${import.meta.env.VITE_API_URL}/api/tables/${restaurantId}`,
   {
     headers: { Authorization: `Bearer ${token}` },
-  },
+  }
 );
 
 const allTables = tableRes.data;

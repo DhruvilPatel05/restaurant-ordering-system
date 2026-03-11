@@ -4,7 +4,6 @@ import "./Tables.css";
 
 const statusOptions = ["AVAILABLE", "OCCUPIED", "RESERVED"];
 
-
 const Tables = () => {
   const [tables, setTables] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -17,15 +16,19 @@ const Tables = () => {
   });
 
   const token1 = localStorage.getItem("token");
+  const restaurantId = localStorage.getItem("restaurantId");
 
   // ================= FETCH TABLES =================
   const fetchTables = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/tables`, {
-        headers: {
-          Authorization: `Bearer ${token1}`,
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/tables/${restaurantId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token1}`,
+          },
         },
-      });
+      );
 
       if (response.status === 200) {
         setTables(response.data);
@@ -35,12 +38,11 @@ const Tables = () => {
     }
   };
 
-useEffect(() => {
-  if (token1) {
-    fetchTables();
-  }
-}, [token1]);
-
+  useEffect(() => {
+    if (token1) {
+      fetchTables();
+    }
+  }, [token1]);
 
   // ================= OPEN MODAL =================
   const openAddModal = () => {
@@ -73,24 +75,34 @@ useEffect(() => {
     try {
       if (editingTable) {
         // UPDATE
-        await axios.put(
-          `${import.meta.env.VITE_API_URL}/api/tables/${editingTable.id}`,
-          form,
+       await axios.put(
+  `${import.meta.env.VITE_API_URL}/api/tables/${editingTable.id}`,
+  {
+    ...form,
+    restaurantId: restaurantId,
+  },
+  {
+    headers: {
+      Authorization: `Bearer ${token1}`,
+    },
+  }
+);
+      } else {
+        // ADD
+        axios.post(
+          `${import.meta.env.VITE_API_URL}/api/tables`,
+          {
+            ...form,
+            restaurantId: restaurantId,
+          },
           {
             headers: {
               Authorization: `Bearer ${token1}`,
             },
           },
         );
-      } else {
-        // ADD
-        await axios.post(`${import.meta.env.VITE_API_URL}/api/tables`, form, {
-          headers: {
-            Authorization: `Bearer ${token1}`,
-          },
-        });
       }
-      console.log(form);
+      // console.log(form);
 
       setShowModal(false);
       fetchTables(); // refresh list
@@ -122,6 +134,7 @@ useEffect(() => {
         `${import.meta.env.VITE_API_URL}/api/tables/${id}`,
         {
           ...tableToUpdate,
+          restaurantId: restaurantId,
           status: newStatus,
         },
         {

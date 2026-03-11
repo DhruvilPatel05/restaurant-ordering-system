@@ -41,11 +41,11 @@ const Login = () => {
         localStorage.setItem("userEmail", reaponse.data.email);
         localStorage.setItem("userId", reaponse.data.userId);
         localStorage.setItem("role", reaponse.data.role);
+        localStorage.setItem("restaurantId", reaponse.data.restaurantId);
 
       
           const role = reaponse.data.role;
         if (role === "USER") {
-        
           await loadCart(reaponse.data.token);
         }
 
@@ -53,7 +53,7 @@ const Login = () => {
   if (role === "USER") {
     await loadCart(reaponse.data.token);
     navigate("/"); 
-  } else if (role === "ADMIN") {
+  } else if (role === "RESTAURANT_ADMIN") {
     navigate("/admin/dashboard");  
   } else if (role === "CHEF") {
     navigate("/kitchen");

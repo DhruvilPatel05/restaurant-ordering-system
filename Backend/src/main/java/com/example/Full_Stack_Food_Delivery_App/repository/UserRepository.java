@@ -16,4 +16,11 @@ public interface UserRepository extends MongoRepository<UserEntity,String> {
     List<UserEntity> findByRoleNot(Role role);
 
     List<UserEntity> findByNameContainingIgnoreCaseAndRoleNot(String name, Role role);
+    List<UserEntity> findByRestaurantIdAndRoleNot(String restaurantId, Role role);
+
+    List<UserEntity> findByRestaurantIdAndNameContainingIgnoreCaseAndRoleNot(
+            String restaurantId,
+            String name,
+            Role role
+    );
 }

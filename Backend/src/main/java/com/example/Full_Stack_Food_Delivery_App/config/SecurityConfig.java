@@ -49,45 +49,52 @@ public class SecurityConfig {
                                 "/api/verify-otp",
                                 "/images/view/**",
                                 "/api/foods/getAll",
-                                "/api/foods/{id}"
+                                "/api/foods/*",
+                                "/api/foods/add",
+                                "/api/payment/**",
+                                "/api/coupons/**"
                         ).permitAll()
+                                .requestMatchers("/api/orders/**").authenticated()
+
                         // Admin Only
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/tables/available").permitAll()
-
-                        .requestMatchers(HttpMethod.PUT, "/api/tables/occupy/**")
-                        .hasAnyRole("USER","ADMIN")
-
-                        // Food Management (Admin only)
-                        .requestMatchers("/api/foods/add",
-                                "/api/foods/update/**",
-                                "/api/foods/delete/**",
-                                "/api/foods/status/**")
-                        .hasRole("ADMIN")
-
-                        // Orders
-//                        .requestMatchers("/api/orders/kitchen").hasAnyRole("ADMIN","CHEF")
-//                                .requestMatchers("/api/orders/table/**")
+//                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+//                        .requestMatchers("/api/tables/available").permitAll()
+//
+//                        .requestMatchers(HttpMethod.PUT, "/api/tables/occupy/**")
+//                        .hasAnyRole("USER","ADMIN")
+//
+//                        // Food Management (Admin only)
+//                        .requestMatchers(
+//                                "/api/foods/update/**",
+//                                "/api/foods/delete/**",
+//                                "/api/foods/status/**")
+//                        .hasRole("RESTAURANT_ADMIN")
+//
+//                                .requestMatchers("/api/restaurants/**").hasRole("MAIN_ADMIN")
+//                                .requestMatchers("/api/admin/**").hasRole("MAIN_ADMIN")
+//                        // Orders
+////                        .requestMatchers("/api/orders/kitchen").hasAnyRole("ADMIN","CHEF")
+////                                .requestMatchers("/api/orders/table/**")
+////                                .hasAnyRole("ADMIN","USER")
+////                                .requestMatchers("/api/orders").hasAnyRole("ADMIN","USER")
+////                        .requestMatchers("/api/orders/**").hasAnyRole("ADMIN","USER")
+////                        .requestMatchers("/api/orders/**").authenticated()
+////                                .requestMatchers("/api/orders/table/**").permitAll()
+//
+//                        // Cart & Bookings → USER only
+//                        .requestMatchers("/api/cart/**").hasAnyRole("USER","ADMIN")
+//                        .requestMatchers("/api/bookings/**").hasAnyRole("USER","ADMIN")
+//
+//                        .requestMatchers("/ws/**").permitAll()
+//
+//                                // Orders
+//                                .requestMatchers("/api/orders/kitchen")
+//                                .hasAnyRole("ADMIN","CHEF")
+//
+//                                .requestMatchers("/api/orders/**")
 //                                .hasAnyRole("ADMIN","USER")
-//                                .requestMatchers("/api/orders").hasAnyRole("ADMIN","USER")
-//                        .requestMatchers("/api/orders/**").hasAnyRole("ADMIN","USER")
-//                        .requestMatchers("/api/orders/**").authenticated()
-//                                .requestMatchers("/api/orders/table/**").permitAll()
-
-                        // Cart & Bookings → USER only
-                        .requestMatchers("/api/cart/**").hasAnyRole("USER","ADMIN")
-                        .requestMatchers("/api/bookings/**").hasAnyRole("USER","ADMIN")
-
-                        .requestMatchers("/ws/**").permitAll()
-
-                                // Orders
-                                .requestMatchers("/api/orders/kitchen")
-                                .hasAnyRole("ADMIN","CHEF")
-
-                                .requestMatchers("/api/orders/**")
-                                .hasAnyRole("ADMIN","USER")
-
-                                // Everything else
+//
+//                                // Everything else
                         .anyRequest().authenticated()
                 )
 

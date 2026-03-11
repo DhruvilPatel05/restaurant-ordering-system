@@ -17,6 +17,6 @@ public class OrderRequest {
     private String orderStatus;
     private int tableNumber;
     private String customerName;   // ✅ ADD
-
+    private String restaurantId;
 
 }

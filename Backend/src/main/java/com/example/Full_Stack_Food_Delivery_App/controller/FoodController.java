@@ -19,7 +19,7 @@ import java.util.List;
 public class FoodController {
 
     private final FoodService foodService;
-    private final ObjectMapper objectMapper;
+
 
     @PostMapping(value = "/add",consumes = "multipart/form-data")
     public FoodResponse addFood(
@@ -40,14 +40,14 @@ public class FoodController {
     }
 
 
-    @GetMapping("/getAll")
-    public List<FoodResponse> readFood(){
-        return foodService.readFood();
+    @GetMapping("/restaurant/{restaurantId}")
+    public List<FoodResponse> readFood(@PathVariable String restaurantId){
+        return foodService.readFood(restaurantId);
     }
 
     @GetMapping("/{id}")
     public FoodResponse readFoodById(@PathVariable String id){
-        return foodService.readFood(id);
+        return foodService.readFoodone(id);
     }
 
     @DeleteMapping("delete/{id}")

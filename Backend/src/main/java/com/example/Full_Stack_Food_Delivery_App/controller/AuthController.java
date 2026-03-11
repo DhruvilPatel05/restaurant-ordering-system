@@ -64,6 +64,7 @@ public class AuthController {
                 .userId(user.getId())     // ✅ SEND MONGO _id
                 .email(user.getEmail())
                 .token(jwtToken)
+                .restaurantId(user.getRestaurantId())
                 .role(user.getRole().name())
                 .build();
 

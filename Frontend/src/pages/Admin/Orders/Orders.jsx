@@ -8,12 +8,13 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
  const token = localStorage.getItem("token");
+   const restaurantId = localStorage.getItem("restaurantId");
 
   // ---------------- FETCH ORDERS ----------------
   const fetchOrders = async () => {
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/orders`,
+        `${import.meta.env.VITE_API_URL}/api/orders/restaurant/${restaurantId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -33,12 +34,14 @@ const Orders = () => {
   };
 
 useEffect(() => {
-  fetchOrders(); // first load immediately
+  if (!token || !restaurantId) return;
 
-  const interval = setInterval(fetchOrders, 5000); // refresh every 5 sec
+  fetchOrders();
 
-  return () => clearInterval(interval); // cleanup
-}, []);
+  const interval = setInterval(fetchOrders, 5000);
+
+  return () => clearInterval(interval);
+}, [token, restaurantId]);
   const filteredOrders = orders.filter((o)=>{
     if(activeTab==="All"){
       return true;
@@ -62,14 +65,22 @@ useEffect(() => {
   const deleteOrder = async (id) => {
     if (!window.confirm("Delete this order?")) return;
 
-    await axios.delete(`${import.meta.env.VITE_API_URL}/api/orders/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    fetchOrders();
-  };
+    try {
+    await axios.delete(
+      `${import.meta.env.VITE_API_URL}/api/orders/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
+    fetchOrders();
+  } catch (error) {
+    console.error("Delete failed", error);
+    alert("Failed to delete order");
+  }
+};
   if (loading) return <h3 style={{ padding: 30 }}>Loading orders...</h3>;
 
   return (

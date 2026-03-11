@@ -2,11 +2,13 @@ package com.example.Full_Stack_Food_Delivery_App.service;
 
 
 import com.example.Full_Stack_Food_Delivery_App.entity.OrderEntity;
+import com.example.Full_Stack_Food_Delivery_App.entity.RestaurantEntity;
 import com.example.Full_Stack_Food_Delivery_App.entity.TableEntity;
 import com.example.Full_Stack_Food_Delivery_App.io.OrderItem;
 import com.example.Full_Stack_Food_Delivery_App.io.OrderRequest;
 import com.example.Full_Stack_Food_Delivery_App.io.OrderResponse;
 import com.example.Full_Stack_Food_Delivery_App.repository.OrderRepository;
+import com.example.Full_Stack_Food_Delivery_App.repository.RestaurantRepository;
 import com.example.Full_Stack_Food_Delivery_App.repository.TableRepository;
 
 import com.lowagie.text.*;
@@ -38,6 +40,8 @@ public class OrderServiceImpl implements OrderService {
     private final SimpMessagingTemplate messagingTemplate;
     private final TableRepository tableRepository;
 
+    private RestaurantRepository restaurantRepository;
+
 
 
     private String generateOrderNumber() {
@@ -61,8 +65,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderResponse> getKitchenOrders() {
-        return orderRepository.findAllByOrderByCreatedAtDesc()
+    public List<OrderResponse> getKitchenOrders(String restaurantId) {
+        return orderRepository
+                .findByRestaurantIdOrderByCreatedAtDesc(restaurantId)
                 .stream()
                 .map(this::convertToResponse)
                 .toList();
@@ -89,8 +94,10 @@ public class OrderServiceImpl implements OrderService {
 
     // ================= READ ALL =================
     @Override
-    public List<OrderResponse> getAllOrders() {
-        return orderRepository.findAllByOrderByCreatedAtDesc()
+    public List<OrderResponse> getAllOrders(String restaurantId) {
+
+        return orderRepository
+                .findByRestaurantIdOrderByCreatedAtDesc(restaurantId)
                 .stream()
                 .map(this::convertToResponse)
                 .toList();
@@ -135,9 +142,11 @@ public class OrderServiceImpl implements OrderService {
         return convertToResponse(saved);
     }
     @Override
-    public List<OrderResponse> getOrdersByTable(int tableNo) {
+    public List<OrderResponse> getOrdersByTable(String restaurantId, int tableNo) {
+
         return orderRepository
-                .findByTableNumberAndPaymentStatusOrderByCreatedAtDesc(
+                .findByRestaurantIdAndTableNumberAndPaymentStatusOrderByCreatedAtDesc(
+                        restaurantId,
                         tableNo,
                         "UNPAID"
                 )
@@ -147,16 +156,20 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderEntity> payAllOrders(int tableNumber, String paymentMethod) {
+    public List<OrderEntity> payAllOrders(String restaurantId,int tableNumber, String paymentMethod,String couponCode,
+                                          double discount) {
 
 
         if (!List.of("CASH", "UPI", "CARD").contains(paymentMethod.toUpperCase())) {
             throw new RuntimeException("Invalid Payment Method");
         }
+//        System.out.println("Restaurant: " + restaurantId);
+//        System.out.println("Table: " + tableNumber);
 
         List<OrderEntity> unpaidOrders =
                 orderRepository
-                        .findByTableNumberAndPaymentStatusOrderByCreatedAtDesc(
+                        .findByRestaurantIdAndTableNumberAndPaymentStatusOrderByCreatedAtDesc(
+                                restaurantId,
                                 tableNumber,
                                 "UNPAID"
                         );
@@ -168,10 +181,13 @@ public class OrderServiceImpl implements OrderService {
         unpaidOrders.forEach(order -> {
             order.setPaymentStatus("PAID");
             order.setPaymentMethod(paymentMethod.toUpperCase());
+            order.setCouponCode(couponCode);
+            order.setDiscount(discount);
         });
         orderRepository.saveAll(unpaidOrders);
 
-        TableEntity table = tableRepository.findByTableNumber(tableNumber)
+        TableEntity table = tableRepository
+                .findByRestaurantIdAndTableNumber(restaurantId, tableNumber)
                 .orElseThrow(() -> new RuntimeException("Table not found"));
 
         table.setStatus("AVAILABLE");
@@ -193,12 +209,18 @@ public class OrderServiceImpl implements OrderService {
 //                        );
 
 
+        System.out.println(orderIds);
         List<OrderEntity> orders =
                 orderRepository.findAllById(orderIds);
 
         if (orders.isEmpty()) {
             throw new RuntimeException("No paid orders found");
         }
+
+        String restaurantId = orders.get(0).getRestaurantId();
+        RestaurantEntity restaurant = restaurantRepository
+                .findById(restaurantId)
+                .orElseThrow(() -> new RuntimeException("Restaurant not found"));
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -228,17 +250,21 @@ public class OrderServiceImpl implements OrderService {
 
 
             // ================= HEADER =================
-            Paragraph title = new Paragraph("NAVJIVAN RESTAURANT", titleFont);
+            Paragraph title = new Paragraph(restaurant.getName().toUpperCase(), titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
 
-            Paragraph address = new Paragraph("Shree Complex, Vania Vad, Shanti Nagar, Nadiad, Gujarat 387003", normalFont);
+            Paragraph address = new Paragraph(restaurant.getAddress(), normalFont);
             address.setAlignment(Element.ALIGN_CENTER);
             document.add(address);
 
-            Paragraph phone = new Paragraph("Phone: 94997 01211", normalFont);
+            Paragraph phone = new Paragraph("Phone: " + restaurant.getPhone(), normalFont);
             phone.setAlignment(Element.ALIGN_CENTER);
             document.add(phone);
+
+            Paragraph email = new Paragraph("Email: " + restaurant.getEmail(), normalFont);
+            email.setAlignment(Element.ALIGN_CENTER);
+            document.add(email);
 
             document.add(new Paragraph(" "));
             document.add(new LineSeparator());
@@ -285,6 +311,7 @@ public class OrderServiceImpl implements OrderService {
             double subtotal = 0;
             int rowIndex = 0;
 
+
             for (OrderEntity order : orders) {
                 for (OrderItem item : order.getOrderedItems()) {
 
@@ -318,9 +345,16 @@ public class OrderServiceImpl implements OrderService {
             document.add(new Paragraph(" "));
 
             // ================= TAX CALCULATION =================
+
+
+            double discount = orders.stream()
+                    .mapToDouble(OrderEntity::getDiscount)
+                    .sum();
+
             double sgst = subtotal * 0.025;
             double cgst = subtotal * 0.025;
-            double grandTotal = subtotal + sgst + cgst;
+//            double grandTotal = subtotal + sgst + cgst;
+            double grandTotal = subtotal + sgst + cgst - discount;
 
             PdfPTable totalTable = new PdfPTable(2);
             totalTable.setWidthPercentage(50);
@@ -338,6 +372,14 @@ public class OrderServiceImpl implements OrderService {
 
             totalTable.addCell(netLabel);
             totalTable.addCell(netValue);
+
+            if(discount > 0){
+
+                totalTable.addCell(new PdfPCell(new Phrase("Coupon Discount:", boldFont)));
+
+                totalTable.addCell(new PdfPCell(new Phrase(
+                        String.format("Rs. -%.2f", discount), boldFont)));
+            }
 
             totalTable.addCell(new PdfPCell(new Phrase("SGST 2.5%:", boldFont)));
             totalTable.addCell(new PdfPCell(new Phrase(
@@ -429,6 +471,7 @@ public class OrderServiceImpl implements OrderService {
                 .userId(request.getUserId())
                 .orderNumber(orderNo)
                 .customerName(request.getCustomerName())
+                .restaurantId(request.getRestaurantId())
                 .orderedItems(request.getOrderedItems())
                 .tableNumber(request.getTableNumber())
                 .amount(request.getAmount())

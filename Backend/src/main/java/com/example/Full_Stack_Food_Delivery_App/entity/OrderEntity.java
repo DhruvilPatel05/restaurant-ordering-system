@@ -34,5 +34,10 @@ public class OrderEntity {
 
 
     private LocalDateTime createdAt;
+    private String restaurantId;
+
+    private String couponCode;
+
+    private Double discount;
 
 }

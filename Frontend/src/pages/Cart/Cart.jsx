@@ -12,6 +12,7 @@ const Cart = () => {
   }, []);
 
   const navigate = useNavigate();
+    const restaurantId = localStorage.getItem("restaurantId");
 
   const {
     foodList,
@@ -46,6 +47,7 @@ const Cart = () => {
 
       const orderData = {
         userId: localStorage.getItem("userId"),
+        restaurantId: restaurantId,
         tableNumber: parseInt(localStorage.getItem("tableNo")),
         customerName: localStorage.getItem("customerName"),
         orderedItems: cartItems.map((item) => ({
@@ -56,7 +58,7 @@ const Cart = () => {
         })),
         amount: subtotal,
       };
-      console.log("Order Payload:", orderData); // Debugging line
+      // console.log("Order Payload:", orderData);
 
       // ✅ 1. Create order
       await axios.post(`${import.meta.env.VITE_API_URL}/api/orders`, orderData, {
@@ -64,9 +66,12 @@ const Cart = () => {
       });
 
       // ✅ 2. Clear cart in backend
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/cart`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+     await axios.delete(
+  `${import.meta.env.VITE_API_URL}/api/cart/${restaurantId}`,
+  {
+    headers: { Authorization: `Bearer ${token}` },
+  }
+);
 
       // ✅ 3. Clear cart in frontend
       setquantities({});

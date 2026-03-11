@@ -4,14 +4,21 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 const BillPage = () => {
   const [selected, setSelected] = useState("UPI");
   const navigate = useNavigate();
 
   const [orders, setOrders] = useState([]);
+  const [couponCode, setCouponCode] = useState("");
+  const [discount, setDiscount] = useState(0);
   const tableNumber = parseInt(localStorage.getItem("tableNo"));
   const token = localStorage.getItem("token");
+  const restaurantId = localStorage.getItem("restaurantId");
+  const [couponApplied, setCouponApplied] = useState(false);
 
   useEffect(() => {
     fetchOrders();
@@ -20,7 +27,7 @@ const BillPage = () => {
   const fetchOrders = async () => {
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/orders/table/${tableNumber}`,
+        `${import.meta.env.VITE_API_URL}/api/orders/${restaurantId}/table/${tableNumber}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -29,7 +36,7 @@ const BillPage = () => {
       );
       //   console.log("API Response:", res.data); // Debugging line
       setOrders(res.data);
-      console.log(res.data);
+      // console.log(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -37,16 +44,52 @@ const BillPage = () => {
 
   const subtotal = orders.reduce((acc, o) => acc + o.amount, 0);
 
- const sgst = subtotal * 0.025;   // 2.5%
-const cgst = subtotal * 0.025;   // 2.5%
+  const sgst = subtotal * 0.025; // 2.5%
+  const cgst = subtotal * 0.025; // 2.5%
 
-const grandTotal = subtotal + sgst + cgst;
+  const totalWithTax = subtotal + sgst + cgst;
+  const grandTotal = totalWithTax - discount;
 
   const handlePayment = async () => {
     try {
-      const response = await axios.put(
-        `${import.meta.env.VITE_API_URL}/api/orders/pay/${tableNumber}`,
-        { paymentMethod: selected },
+      // console.log("Initiating payment with method:", selected); // Debugging line
+
+      // CASH PAYMENT (no stripe)
+      if (selected === "Cash") {
+        const response = await axios.put(
+          `${import.meta.env.VITE_API_URL}/api/orders/${restaurantId}/pay/${tableNumber}`,
+          { paymentMethod: "CASH",
+            couponCode,
+            discount
+           },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        toast.success("Payment Successful!");
+
+        navigate("/payment-success", {
+          state: { orderIds: response.data },
+        });
+
+        return;
+      }
+
+      // STRIPE PAYMENT
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/payment/create-session`,
+        {
+          restaurantId,
+          tableNumber,
+          amount: grandTotal,
+          paymentMethod: selected,
+          couponCode,
+    discount
+
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -54,23 +97,43 @@ const grandTotal = subtotal + sgst + cgst;
         },
       );
 
-      const paidOrderIds = response.data;
+      // store order ids before stripe redirect
+      const orderIds = orders.map((o) => o.id);
+      localStorage.setItem("paymentOrderIds", JSON.stringify(orderIds));
 
-      toast.success("Payment Successful!");
-
-      localStorage.removeItem("tableNo");
-
-      navigate("/payment-success", {
-        state: {
-          orderIds: paidOrderIds, // 🔥 send only these
-        },
-      });
+      localStorage.setItem("paymentTableNo", tableNumber);
+      localStorage.setItem("paymentRestaurantId", restaurantId);
+      window.location.href = res.data.url;
     } catch (error) {
-      console.log(error);
+      console.log("Payment error:", error.response);
       alert("Payment Failed");
     }
   };
 
+  const applyCoupon = async () => {
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/coupons/apply`,
+        {
+          code: couponCode,
+          restaurantId,
+          amount: grandTotal,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      setDiscount(res.data.discount);
+      setCouponApplied(true);
+
+      toast.success("Coupon Applied!");
+    } catch (err) {
+      toast.error("Invalid Coupon");
+    }
+  };
   return (
     <>
       <div className="bill-header">
@@ -121,15 +184,46 @@ const grandTotal = subtotal + sgst + cgst;
             <span>₹{subtotal.toFixed(2)}</span>
           </div>
 
-           <div className="summary-row">
-    <span>SGST (2.5%)</span>
-    <span>₹{sgst.toFixed(2)}</span>
-  </div>
+       <div className="coupon-box">
+  <input
+    type="text"
+    placeholder="Enter Coupon Code"
+    value={couponCode}
+    disabled={couponApplied}
+    onChange={(e) => setCouponCode(e.target.value)}
+  />
 
-  <div className="summary-row">
-    <span>CGST (2.5%)</span>
-    <span>₹{cgst.toFixed(2)}</span>
-  </div>
+  <button
+    className={`apply-btn ${couponApplied ? "applied" : ""}`}
+    disabled={couponApplied}
+    onClick={applyCoupon}
+  >
+    {couponApplied ? "Applied ✓" : "Apply"}
+  </button>
+</div>
+
+          {discount > 0 && (
+            <div className="summary-row">
+              <span>Coupon ({couponCode})</span>
+              <span>-₹{discount.toFixed(2)}</span>
+            </div>
+          )}
+
+          <div className="summary-row">
+            <span>SGST (2.5%)</span>
+            <span>₹{sgst.toFixed(2)}</span>
+          </div>
+
+          <div className="summary-row">
+            <span>CGST (2.5%)</span>
+            <span>₹{cgst.toFixed(2)}</span>
+          </div>
+
+          {discount > 0 && (
+           <div className="coupon-success">
+  Coupon {couponCode} <span className="applied-text">Applied ✓</span>
+</div>
+          )}
 
           <div className="grand-total">
             <span>Grand Total</span>
