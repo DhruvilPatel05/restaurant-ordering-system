@@ -4,85 +4,74 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
 const PaymentSuccess = () => {
-
   const navigate = useNavigate();
   const location = useLocation();
 
   const [seconds, setSeconds] = useState(8);
   const [paymentUpdated, setPaymentUpdated] = useState(false);
 
+  let orderIds = location.state?.orderIds;
 
+  if (!orderIds || orderIds.length === 0) {
+    const stored = localStorage.getItem("paymentOrderIds");
+    orderIds = stored ? JSON.parse(stored) : [];
+  }
 
-let orderIds = location.state?.orderIds;
+  const isCashPayment = location.state?.orderIds ? true : false;
 
-if (!orderIds || orderIds.length === 0) {
-  const stored = localStorage.getItem("paymentOrderIds");
-  orderIds = stored ? JSON.parse(stored) : [];
-}
-
-const isCashPayment = location.state?.orderIds ? true : false;
-
-// console.log("Order IDs:", orderIds);
+  // console.log("Order IDs:", orderIds);
 
   const token = localStorage.getItem("token");
   const restaurantId = localStorage.getItem("restaurantId");
   const tableNumber = localStorage.getItem("tableNo");
-
+  const couponCode = localStorage.getItem("paymentCouponCode");
+  const discount = localStorage.getItem("paymentDiscount");
 
   useEffect(() => {
-
     const markOrdersPaid = async () => {
-       if (isCashPayment) {
-      setPaymentUpdated(true);
-      return;
-    }
+      if (isCashPayment) {
+        setPaymentUpdated(true);
+        return;
+      }
       try {
-
         await axios.put(
           `${import.meta.env.VITE_API_URL}/api/orders/${restaurantId}/pay/${tableNumber}`,
-          { paymentMethod: "CARD" },
+          { paymentMethod: "CARD", couponCode, discount },
           {
             headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
+              Authorization: `Bearer ${token}`,
+            },
+          },
         );
 
         // console.log("Orders marked PAID");
 
         setPaymentUpdated(true);
-
       } catch (error) {
         console.error("Payment update failed:", error);
       }
     };
 
     markOrdersPaid();
-
   }, []);
 
   // ⏳ countdown
   useEffect(() => {
-
     const timer = setInterval(() => {
-      setSeconds(prev => prev - 1);
-    }, 40000);
+      setSeconds((prev) => prev - 1);
+    }, 1000);
 
     if (seconds === 0) {
       navigate("/");
     }
 
     return () => clearInterval(timer);
-
   }, [seconds]);
-
-
 
   const downloadInvoice = async () => {
     // console.log(orderIds)
 
     try {
-
       if (!paymentUpdated) {
         alert("Payment still processing...");
         return;
@@ -94,9 +83,9 @@ const isCashPayment = location.state?.orderIds ? true : false;
         {
           responseType: "blob",
           headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -107,11 +96,9 @@ const isCashPayment = location.state?.orderIds ? true : false;
 
       document.body.appendChild(link);
       link.click();
-
     } catch (error) {
       console.error("Error downloading invoice:", error);
     }
-
   };
 
   return (

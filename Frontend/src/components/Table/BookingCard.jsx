@@ -1,23 +1,35 @@
-import { useState } from "react";
+import { useState ,useEffect} from "react";
 import StepOne from "./StepOne";
 import StepTwo from "./StepTwo";
 import StepThree from "./StepThree";
 import "./styles/booking.css";
 import BookingConfirmed from "./BookingConfirmed";
+import { useNavigate } from "react-router-dom";
+
 
 const BookingCard = ({setTab }) => {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
 
   const [bookingData, setBookingData] = useState(null);
 
-  const [form, setForm] = useState({
-    date: "",
-    time: "",
-    guests: "",
-    table: null,
-    name: "",
-    phone: "",
-  });
+const [form, setForm] = useState({
+  restaurantId: "",
+  date: "",
+  time: "",
+  guests: "",
+  table: null,
+  name: "",
+  phone: "",
+});
+
+ useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      navigate("/login");
+    }
+  }, []);
 
   return (
     <div className="booking-wrapper">

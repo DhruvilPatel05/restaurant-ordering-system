@@ -28,23 +28,24 @@ const StepThree = ({ form, setForm, onBack, onBook }) => {
     try {
       const userId = localStorage.getItem("userId");
 
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/bookings`,
-        {
-          userId,
-          tableId: form.table.id,
-          date: form.date,
-          time: form.time,
-          guests: form.guests,
-          name: form.name,
-          phone: form.phone,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
+    const res = await axios.post(
+  `${import.meta.env.VITE_API_URL}/api/bookings`,
+  {
+    restaurantId: form.restaurantId,
+    userId,
+    tableId: form.table.id,
+    date: form.date,
+    time: form.time,
+    guests: form.guests,
+    name: form.name,
+    phone: form.phone,
+  },
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
 
       onBook(res.data); // pass real booking data
     } catch (error) {

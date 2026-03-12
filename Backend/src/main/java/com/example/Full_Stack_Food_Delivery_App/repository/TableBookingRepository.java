@@ -19,5 +19,11 @@ public interface TableBookingRepository
     List<TableBookingEntity> findByStatus(String status);
     TableBookingEntity findTopByOrderByCreatedAtDesc();
 
+    List<TableBookingEntity> findByRestaurantIdAndDateAndTimeAndStatus(
+            String restaurantId,
+            String date,
+            String time,
+            String status
+    );
 
 }

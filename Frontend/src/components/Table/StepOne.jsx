@@ -1,11 +1,20 @@
 import React from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const StepOne = ({ form, setForm, onNext }) => {
   // ✅ tomorrow date
   const today = new Date();
   const todayStr = today.toISOString().split("T")[0];
 
-  const isValid = form.date !== "" && form.time !== "" && form.guests !== "";
+  const [restaurants, setRestaurants] = useState([]);
+  const token = localStorage.getItem("token");
+
+  const isValid =
+  form.restaurantId !== "" &&
+  form.date !== "" &&
+  form.time !== "" &&
+  form.guests !== "";
 
   // ✅ time slots (1 hour gap)
   const timeSlots = [
@@ -23,37 +32,52 @@ const StepOne = ({ form, setForm, onNext }) => {
     "9:00 - 10:00 PM",
     "10:00 - 11:00 PM",
   ];
-const isPastSlot = (slot) => {
-  if (form.date !== todayStr) return false;
+  const isPastSlot = (slot) => {
+    if (form.date !== todayStr) return false;
 
-  const now = new Date();
-  const currentHour = now.getHours();
-  const currentMinutes = now.getMinutes();
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinutes = now.getMinutes();
 
-  // Extract starting time from slot (e.g., "3:00 - 4:00 PM")
-  const startTime = slot.split(" - ")[0]; // "3:00"
-  const period = slot.includes("PM") ? "PM" : "AM";
+    // Extract starting time from slot (e.g., "3:00 - 4:00 PM")
+    const startTime = slot.split(" - ")[0]; // "3:00"
+    const period = slot.includes("PM") ? "PM" : "AM";
 
+    let parts = startTime.split(":");
+    let hour = parseInt(parts[0]);
+    let minute = parseInt(parts[1]);
 
-  let parts = startTime.split(":");
-let hour = parseInt(parts[0]);
-let minute = parseInt(parts[1]);
+    // Convert to 24-hour format
+    if (period === "PM" && hour !== 12) {
+      hour += 12;
+    }
+    if (period === "AM" && hour === 12) {
+      hour = 0;
+    }
 
-  // Convert to 24-hour format
-  if (period === "PM" && hour !== 12) {
-    hour += 12;
-  }
-  if (period === "AM" && hour === 12) {
-    hour = 0;
-  }
+    // Compare properly
+    if (hour < currentHour) return true;
+    if (hour === currentHour && minute <= currentMinutes) return true;
 
-  // Compare properly
-  if (hour < currentHour) return true;
-  if (hour === currentHour && minute <= currentMinutes) return true;
+    return false;
+  };
 
-  return false;
-};
+  useEffect(() => {
+    fetchRestaurants();
+  }, []);
 
+  const fetchRestaurants = async () => {
+    const res = await axios.get(
+      `${import.meta.env.VITE_API_URL}/api/restaurants`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    setRestaurants(res.data);
+  };
 
   return (
     <>
@@ -62,6 +86,22 @@ let minute = parseInt(parts[1]);
       </div>
 
       <div className="grid-3">
+        <div className="input-group">
+          <label>🍽 Restaurant</label>
+
+          <select
+            value={form.restaurantId}
+            onChange={(e) => setForm({ ...form, restaurantId: e.target.value })}
+          >
+            <option value="">Select Restaurant</option>
+
+            {restaurants.map((r) => (
+              <option key={r.id} value={r.id}>
+                {r.name}
+              </option>
+            ))}
+          </select>
+        </div>
         {/*  Date — only from tomorrow */}
         <div className="input-group">
           <label>📅 Date</label>
@@ -118,7 +158,6 @@ let minute = parseInt(parts[1]);
 };
 
 export default StepOne;
-
 
 // import React from "react";
 

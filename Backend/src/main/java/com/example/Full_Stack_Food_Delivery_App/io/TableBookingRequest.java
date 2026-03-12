@@ -12,4 +12,5 @@ public class TableBookingRequest {
     private int guests;
     private String name;
     private String phone;
+    private String restaurantId;
 }

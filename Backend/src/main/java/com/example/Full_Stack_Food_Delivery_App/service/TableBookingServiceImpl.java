@@ -56,12 +56,12 @@ public class TableBookingServiceImpl implements TableBookingService {
     @Override
     public TableBookingResponse bookTable(TableBookingRequest request) {
         List<TableBookingEntity> existing =
-                repository.findByDateAndTimeAndStatus(
+                repository.findByRestaurantIdAndDateAndTimeAndStatus(
+                        request.getRestaurantId(),
                         request.getDate(),
                         request.getTime(),
                         "BOOKED"
                 );
-
         boolean alreadyBooked = existing.stream()
                 .anyMatch(b -> b.getTableId().equals(request.getTableId()));
 
@@ -71,6 +71,7 @@ public class TableBookingServiceImpl implements TableBookingService {
 
 
         TableBookingEntity entity = TableBookingEntity.builder()
+                .restaurantId(request.getRestaurantId())
                 .userId(request.getUserId())
                 .bookingNumber(generateBookingNumber())
                 .createdAt(LocalDateTime.now())

@@ -19,6 +19,5 @@ public class UserController {
     public UserResponse register(@RequestBody UserRequest request){
         UserResponse response = userService.registerUser(request);
         return response;
-
     }
 }

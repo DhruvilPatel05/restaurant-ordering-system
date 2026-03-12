@@ -17,6 +17,12 @@ public interface TableRepository extends MongoRepository<TableEntity, String> {
             int tableNumber
     );
 
+    List<TableEntity> findByRestaurantIdAndSeatsGreaterThanEqual(
+            String restaurantId,
+            int seats
+    );
+
+
 
 
 

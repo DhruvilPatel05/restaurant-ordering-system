@@ -51,8 +51,13 @@ public class TableServiceImpl implements TableService{
                 tableRepository.findByRestaurantId(restaurantId);
 
         List<TableBookingEntity> bookedTables =
-                tableBookingRepository.findByDateAndTimeAndStatus(
-                        date, time, "BOOKED");
+                tableBookingRepository
+                            .findByRestaurantIdAndDateAndTimeAndStatus(
+                                    restaurantId,
+                                date,
+                                time,
+                                "BOOKED"
+                        );
 
         List<String> bookedTableIds = bookedTables.stream()
                 .map(TableBookingEntity::getTableId)

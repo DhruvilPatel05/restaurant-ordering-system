@@ -101,7 +101,7 @@ body {
 
 .grid-3 {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 2fr);
   gap: 22px;
       margin-bottom: 30px;
 }
@@ -477,112 +477,149 @@ select:focus {
 }
 
 /* ===============================
-   MY BOOKINGS (SCOPED STYLES)
+   MY BOOKINGS (IMPROVED DESIGN)
 ================================ */
 
 .mybookings-wrapper {
-  max-width: 720px;
-  margin: 30px auto 60px;
-  padding: 0 12px;
-      margin-top: -60px;
+  max-width: 760px;
+  margin: 40px auto 80px;
+  padding: 0 18px;
 }
+
+.mybookings-wrapper h2 {
+  font-size: 28px;
+  margin-bottom: 24px;
+  font-weight: 700;
+  color: #222;
+}
+
+/* Booking Card */
 
 .mybookings-wrapper .booking-item {
   background: #ffffff;
-  border-radius: 16px;
-  padding: 18px 22px;
+  border-radius: 18px;
+  padding: 24px 28px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.07);
+  margin-bottom: 20px;
+
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+  transition: all 0.2s ease;
 }
 
-/* left info */
+.mybookings-wrapper .booking-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.10);
+}
+
+/* Booking ID */
 
 .mybookings-wrapper .booking-item small {
   color: #777;
+  font-size: 13px;
 }
 
 .mybookings-wrapper .booking-item h3 {
-  margin: 4px 0 8px;
+  margin: 6px 0 14px;
+  font-size: 20px;
+  letter-spacing: 0.5px;
+  font-weight: 700;
 }
 
-/* details grid */
+/* Details Grid */
 
 .mybookings-wrapper .booking-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6px 18px;
+  gap: 10px 24px;
   font-size: 14px;
+  color: #444;
 }
 
-/* right section */
+/* Right section */
 
 .mybookings-wrapper .booking-right {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 8px;
+  gap: 12px;
 }
 
-/* status badge */
+/* Status badge */
 
 .mybookings-wrapper .status {
-  padding: 6px 14px;
-  border-radius: 18px;
-  font-size: 13px;
-  font-weight: 500;
-}
-.mybookings-wrapper .status.confirmed {
-  background: #e8f5ee;
-  color: #1f9d55;
-  padding: 6px 14px;
+  padding: 6px 16px;
   border-radius: 999px;
   font-size: 12px;
   font-weight: 600;
-  text-align: center;
-  width: fit-content;
 }
 
-.mybookings-wrapper  .status.cancelled {
+/* Confirmed */
+
+.mybookings-wrapper .status.confirmed {
+  background: #e8f7ee;
+  color: #1f9d55;
+}
+
+/* Cancelled */
+
+.mybookings-wrapper .status.cancelled {
   background: #fde8e8;
   color: #e02424;
-  padding: 6px 14px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
-  text-align: center;
-  width: fit-content;
 }
 
-/* .mybookings-wrapper .status.confirmed {
-  background: #4e7cff;
-  color: white;
-} */
+/* Seated */
 
 .mybookings-wrapper .status.seated {
-  background: #7b4fe3;
-  color: white;
+  background: #ede7ff;
+  color: #6c4cff;
 }
-/* 
-.mybookings-wrapper .status.cancelled {
-  background: #eeeeee;
-  color: #555;
-} */
 
-/* cancel button */
+/* Cancel button */
 
 .mybookings-wrapper .cancel-btn {
   border: 1px solid #ffb3b3;
   background: white;
   color: #e60000;
-  padding: 6px 14px;
-  border-radius: 14px;
+
+  padding: 8px 16px;
+  border-radius: 20px;
+
   cursor: pointer;
   font-size: 13px;
+  font-weight: 500;
+
+  transition: all 0.2s ease;
 }
 
+.mybookings-wrapper .cancel-btn:hover {
+  background: #fff3f3;
+  border-color: #ff8080;
+}
+
+/* Empty state */
+
+.mybookings-wrapper .no-bookings {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.mybookings-wrapper .empty-icon {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.mybookings-wrapper .no-bookings button {
+  margin-top: 14px;
+  padding: 10px 22px;
+  border-radius: 20px;
+  border: none;
+  background: #f2b75e;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
 .MuiPickersPopper-paper {
   border-radius: 18px !important;
 }

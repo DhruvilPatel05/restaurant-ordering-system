@@ -16,6 +16,8 @@ public class TableBookingEntity {
     @Id
     private String id;
 
+    private String restaurantId;
+
     private String bookingNumber;
 
     private String userId;     // from localStorage

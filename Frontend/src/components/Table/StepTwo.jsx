@@ -8,33 +8,32 @@ const StepTwo = ({ form, setForm, onBack, onNext }) => {
   }, []);
 
 const fetchAvailableTables = async () => {
+
   try {
+
     const token = localStorage.getItem("token");
 
     const res = await axios.get(
-  `${import.meta.env.VITE_API_URL}/api/tables/available`,
-  {
-    params: {
-      date: form.date,
-      time: form.time,
-      guests: form.guests,
-
-    },
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }
-);
-
-    // console.log("Available tables:", res.data);
+      `${import.meta.env.VITE_API_URL}/api/tables/available/${form.restaurantId}`,
+      {
+        params: {
+          date: form.date,
+          time: form.time,
+          guests: form.guests,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     setTables(res.data);
 
   } catch (error) {
     console.log("Error fetching tables", error);
   }
-};
 
+};
 
   const isValid = form.table !== null;
 
