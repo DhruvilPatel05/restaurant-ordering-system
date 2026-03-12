@@ -17,7 +17,7 @@ const MyBookings = ({setTab }) => {
   }, []);
 
   const fetchBookings = async () => {
-    console.log("Fetching bookings for user:", userId);
+    // console.log("Fetching bookings for user:", userId);
     try {
       const res = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/bookings/user/${userId}`,
