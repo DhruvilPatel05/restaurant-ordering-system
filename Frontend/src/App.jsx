@@ -34,6 +34,7 @@ import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 import QRLanding from "./pages/QRLanding/QRLanding";
 import AddCoupon from "./pages/Admin/AddCoupon/AddCoupon";
+import PaymentFailed from "./pages/PaymentFailed/PaymentFailed";
 // Dummy pages (replace with your real pages)
 // const Dashboard = () => <h1>Dashboard Page</h1>;
 // const Tables = () => <h1>Tables Page</h1>;
@@ -70,6 +71,7 @@ const App = () => {
         <Route path="/otp-login" element={<OtpLogin />} />
         <Route path="/order-status/:orderId" element={<OrderStatus />} />
         <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="/payment-failed" element={<PaymentFailed />} />
         <Route path="/table-orders" element={<TableOrders />} />
 
         <Route path="/table-booking" element={<BookingPage />} />
