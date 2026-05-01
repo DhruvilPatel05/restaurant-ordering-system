@@ -14,7 +14,7 @@ public interface FoodService {
     FoodResponse addFood(FoodRequest request, MultipartFile file);
 
     List<FoodResponse> readFood(String restaurantId);
-
+    List<FoodResponse> readActiveFood(String restaurantId);
     FoodResponse readFoodone(String id);
 
     void deleteFood(String id);

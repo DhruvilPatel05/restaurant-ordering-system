@@ -52,7 +52,8 @@ public class SecurityConfig {
                                 "/api/foods/*",
                                 "/api/foods/add",
                                 "/api/payment/**",
-                                "/api/coupons/**"
+                                "/api/coupons/**",
+                                "/api/bookings/**"
                         ).permitAll()
                                 .requestMatchers("/api/orders/**").authenticated()
 

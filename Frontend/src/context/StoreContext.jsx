@@ -102,12 +102,23 @@ export const StoreContextProvider = (props) => {
     // console.log("Fetching food list with token:", token1); // Debugging line
     // console.log("Restaurant ID:", restaurantId); // Debugging line
     try {
-      // const response = await axios.get("http://localhost:8080/api/foods/getAll");
-      const response = await axios.get(`${API}/api/foods/restaurant/${restaurantId}`, {
-  headers: {
-    Authorization: `Bearer ${token1}`,
-  },
-});
+//       // const response = await axios.get("http://localhost:8080/api/foods/getAll");
+//       const response = await axios.get(`${API}/api/foods/restaurant/${restaurantId}`, {
+//   headers: {
+//     Authorization: `Bearer ${token1}`,
+//   },
+// });
+
+const response = await axios.get(
+  `${API}/api/foods/user/${restaurantId}`, // ✅ CORRECT
+  {
+    headers: {
+      Authorization: `Bearer ${token1}`,
+    },
+  }
+);
+
+
 // console.log("API call made to fetch food list"); // Debugging line
 // console.log("API Response:", response); // Debugging line
 

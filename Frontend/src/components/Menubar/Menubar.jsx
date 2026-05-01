@@ -29,35 +29,49 @@ const Menubar = () => {
   const closeMenu = () => setMobileOpen(false);
 
 
-  const logout = async () => {
-    try {
-      const token = localStorage.getItem("token");
+const logout = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const restaurantId = localStorage.getItem("restaurantId");
 
-      if (token) {
-        await axios.put(
-  `${import.meta.env.VITE_API_URL}/api/cart/clear-table/${restaurantId}`,
-  {},
-  {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }
-);
-        // console.log("✅ Table cleared from DB");
-      }
-    } catch (error) {
-      console.error(
-        "❌ Failed to clear table from DB:",
-        error.response?.status
+    if (token && restaurantId) {
+      await axios.put(
+        `${import.meta.env.VITE_API_URL}/api/cart/clear-table/${restaurantId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
     }
+  } catch (error) {
+    console.error("❌ Failed to clear table:", error);
+  }
 
-    localStorage.removeItem("token");
-    localStorage.removeItem("tableNo");
-    settoken("");
-    setquantities({});
-    navigate("/");
-  };
+  // 🔥 CLEAR EVERYTHING RELATED TO USER SESSION
+  localStorage.removeItem("token");
+  localStorage.removeItem("userEmail");
+  localStorage.removeItem("userId");
+  localStorage.removeItem("role");
+
+  localStorage.removeItem("restaurantId");
+  localStorage.removeItem("tableNo");
+
+  localStorage.removeItem("cart");
+
+  localStorage.removeItem("paymentCouponCode");
+  localStorage.removeItem("paymentDiscount");
+  localStorage.removeItem("paymentOrderIds");
+  localStorage.removeItem("paymentRestaurantId");
+  localStorage.removeItem("paymentTableNo");
+
+  // Reset context
+  settoken("");
+  setquantities({});
+
+  navigate("/");
+};
 
   return (
     <>

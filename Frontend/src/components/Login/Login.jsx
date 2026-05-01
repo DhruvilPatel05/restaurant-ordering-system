@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import "./Login.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate ,useLocation} from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -13,6 +13,8 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const location = useLocation();
+const redirectPath = location.state?.from || "/";
 
   const handleChange = (e) => {
     setdata((prev) => ({
@@ -41,19 +43,24 @@ const Login = () => {
         localStorage.setItem("userEmail", reaponse.data.email);
         localStorage.setItem("userId", reaponse.data.userId);
         localStorage.setItem("role", reaponse.data.role);
-        localStorage.setItem("restaurantId", reaponse.data.restaurantId);
+        
+       const existingRestaurantId = localStorage.getItem("restaurantId");
+
+if (!existingRestaurantId && reaponse.data.restaurantId) {
+  localStorage.setItem("restaurantId", reaponse.data.restaurantId);
+}
 
       
           const role = reaponse.data.role;
-        if (role === "USER") {
-          await loadCart(reaponse.data.token);
-        }
+        // if (role === "USER") {
+        //   await loadCart(reaponse.data.token);
+        // }
 
 
   if (role === "USER") {
-    await loadCart(reaponse.data.token);
-    navigate("/"); 
-  } else if (role === "RESTAURANT_ADMIN") {
+  await loadCart(reaponse.data.token);
+  navigate(redirectPath); // ✅ go back to explore-food
+} else if (role === "RESTAURANT_ADMIN") {
     navigate("/admin/dashboard");  
   } else if (role === "CHEF") {
     navigate("/kitchen");

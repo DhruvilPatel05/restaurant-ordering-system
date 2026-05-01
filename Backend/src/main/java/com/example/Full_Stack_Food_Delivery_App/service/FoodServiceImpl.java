@@ -48,12 +48,18 @@ public class FoodServiceImpl implements FoodService {
 
     @Override
     public List<FoodResponse> readFood(String restaurantId) {
-        List<FoodEntity> databaseentry = foodRepository.findAll();
+        // ADMIN → show ALL
         return foodRepository.findByRestaurantId(restaurantId)
                 .stream()
                 .map(this::convertToResponse)
                 .toList();
-
+    }
+    @Override
+    public List<FoodResponse> readActiveFood(String restaurantId) {
+        return foodRepository.findByRestaurantIdAndActiveTrue(restaurantId)
+                .stream()
+                .map(this::convertToResponse)
+                .toList();
     }
 
     @Override

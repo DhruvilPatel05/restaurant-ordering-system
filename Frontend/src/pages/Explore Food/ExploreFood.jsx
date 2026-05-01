@@ -10,27 +10,40 @@ const ExploreFood = () => {
   const navigate = useNavigate();
   const [category, setCategory] = useState("");
   const [searchText, setSearchText] = useState("");
-  const [showTableModal, setShowTableModal] = useState(!localStorage.getItem("tableNo"));
+  const [showTableModal, setShowTableModal] = useState(
+    !localStorage.getItem("tableNo"),
+  );
+  // const [showTableModal, setShowTableModal] = useState(false);
   const [tableNo, setTableNo] = useState(localStorage.getItem("tableNo") || "");
   const [loading, setLoading] = useState(true);
-
+  
 
   const restaurantId = localStorage.getItem("restaurantId");
   // const tableNo = localStorage.getItem("tableNo");
 
   useEffect(() => {
-  window.scrollTo(0, 0);
-}, []);
+    window.scrollTo(0, 0);
+  }, []);
+
   // ✅ Check Login
   useEffect(() => {
     const token = localStorage.getItem("token");
-    
+
+    console.log("Checking authentication...");
+    // 🔴 FIRST check restaurantId
+    if (!restaurantId || restaurantId === "null") {
+      toast.error("Please scan QR code to start ordering.");
+      navigate("/");
+      return;
+    }
 
     if (!token) {
       toast.warning("Please login to continue.");
       navigate("/login");
       return;
     }
+
+    // ✅ ONLY AFTER validation
     fetchCart(token);
   }, [navigate]);
 
@@ -107,7 +120,7 @@ const ExploreFood = () => {
 
   return (
     <>
-      {showTableModal && (
+      {restaurantId && showTableModal && (
         <div className="table-modal-overlay">
           <div className="table-modal">
             <h2>🍽 Enter Table Number</h2>
@@ -158,11 +171,14 @@ const ExploreFood = () => {
             {[
               "All",
               "Starters",
-              "Main Course",
+              "Roti",
+              "Subji",
               "Pizza",
-              "Burgers",
+              "Burger",
               "Desserts",
-              "Drinks",
+              "Beverages",
+              "Biryani",
+              "Butter Milk",
             ].map((cat) => (
               <button
                 key={cat}

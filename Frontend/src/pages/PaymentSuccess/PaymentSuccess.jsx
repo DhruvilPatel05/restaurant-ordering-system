@@ -7,7 +7,7 @@ const PaymentSuccess = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [seconds, setSeconds] = useState(8);
+  // const [seconds, setSeconds] = useState(8);
   const [paymentUpdated, setPaymentUpdated] = useState(false);
 
   let orderIds = location.state?.orderIds;
@@ -55,18 +55,18 @@ const PaymentSuccess = () => {
     markOrdersPaid();
   }, []);
 
-  // ⏳ countdown
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setSeconds((prev) => prev - 1);
-    }, 1000);
+  // // ⏳ countdown
+  // useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     setSeconds((prev) => prev - 1);
+  //   }, 1000);
 
-    if (seconds === 0) {
-      navigate("/");
-    }
+  //   if (seconds === 0) {
+  //     navigate("/");
+  //   }
 
-    return () => clearInterval(timer);
-  }, [seconds]);
+  //   return () => clearInterval(timer);
+  // }, [seconds]);
 
   const downloadInvoice = async () => {
     // console.log(orderIds)
@@ -122,9 +122,9 @@ const PaymentSuccess = () => {
           Your delicious food is being prepared and will reach you shortly 🍽️
         </p> */}
 
-        <p className="redirect-text">
+        {/* <p className="redirect-text">
           Redirecting to home page in <strong>{seconds}s</strong>...
-        </p>
+        </p> */}
 
         <div className="success-buttons">
           <button

@@ -38,8 +38,8 @@ public class StripeController {
                                         .build()
                         )
 
-                        .setSuccessUrl("https://restaurant-ordering-system-phi.vercel.app/payment-success")
-                        .setCancelUrl("https://restaurant-ordering-system-phi.vercel.app/payment-failed")
+                        .setSuccessUrl("http://localhost:5173/payment-success")
+                        .setCancelUrl("http://localhost:5173/payment-success")
 
                         // metadata useful later (webhook / order update)
                         .putMetadata("restaurantId", dto.getRestaurantId())

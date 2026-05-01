@@ -134,10 +134,13 @@ public class TableBookingServiceImpl implements TableBookingService {
 
 
     private TableBookingResponse mapToResponse(TableBookingEntity entity) {
-
+        System.out.println(entity.getTableId());
+//        System.out.println(table.getTableNumber());
         TableEntity table = tableRepository
                 .findById(entity.getTableId())
                 .orElse(null);
+//        System.out.println(entity.getTableId());
+//        System.out.println(table.getTableNumber());
 
         return TableBookingResponse.builder()
                 .id(entity.getId())

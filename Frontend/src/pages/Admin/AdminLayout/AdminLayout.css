@@ -18,11 +18,15 @@ body {
 /* ================= SIDEBAR ================= */
 .sidebar {
   width: 250px;
+  height: calc(100vh - 78px);  /* subtract navbar height */
+  position: fixed;
+  top: 64px;                   /* 👈 push below navbar */
+  left: 0;
   background: radial-gradient(circle at top left, #2b1b12, #000);
   color: white;
   padding: 18px 16px;
+  overflow-y: auto;
 }
-
 .logo {
   display: flex;
   align-items: center;
@@ -66,10 +70,10 @@ body {
 /* ================= CONTENT ================= */
 .admin-content {
   flex: 1;
-  padding: 18px 25px;
+  padding: 22px 25px;
   background: #fafbfd;
+  overflow-y: auto;   /* only this scrolls */
 }
-
 /* ================= HEADER ================= */
 .admin-header {
   height: 78px;
@@ -163,11 +167,12 @@ body {
 }
 /* Right side container */
 .right-panel {
+  margin-left: 250px;   /* same as sidebar width */
   flex: 1;
   display: flex;
   flex-direction: column;
+  height: 100vh;
 }
-
 /* Header stays inside right panel */
 .admin-header {
   height: 78px;

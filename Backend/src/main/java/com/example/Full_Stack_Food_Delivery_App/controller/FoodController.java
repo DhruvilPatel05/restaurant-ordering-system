@@ -39,10 +39,20 @@ public class FoodController {
         return foodService.updateFood(id, request, file);
     }
 
+//
+//    @GetMapping("/restaurant/{restaurantId}")
+//    public List<FoodResponse> readFood(@PathVariable String restaurantId){
+//        return foodService.readFood(restaurantId);
+//    }
 
     @GetMapping("/restaurant/{restaurantId}")
-    public List<FoodResponse> readFood(@PathVariable String restaurantId){
+    public List<FoodResponse> getAllFood(@PathVariable String restaurantId) {
         return foodService.readFood(restaurantId);
+    }
+
+    @GetMapping("/user/{restaurantId}")
+    public List<FoodResponse> getActiveFood(@PathVariable String restaurantId) {
+        return foodService.readActiveFood(restaurantId);
     }
 
     @GetMapping("/{id}")

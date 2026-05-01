@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface FoodRepository extends MongoRepository<FoodEntity,String> {
     List<FoodEntity> findByRestaurantId(String restaurantId);
+    List<FoodEntity> findByRestaurantIdAndActiveTrue(String restaurantId);
 }

@@ -7,15 +7,15 @@ const token = localStorage.getItem("token");
 const categories = [
   { id: 1, name: "Roti", icon: "🫓" },
   { id: 2, name: "Butter Milk", icon: "🥛" },
-  { id: 3, name: "Soups & Salads", icon: "🥗" },
-  { id: 4, name: "Main Courses", icon: "🍛" },
+  { id: 3, name: "Starters", icon: "🥗" },
+  // { id: 4, name: "Main Courses", icon: "🍛" },
   { id: 5, name: "Subji", icon: "🍲" },
   { id: 6, name: "Burger", icon: "🍔" },
   { id: 7, name: "Pizza", icon: "🍕" },
-  { id: 8, name: "Ice Cream", icon: "🍨" },
+  { id: 8, name: "Desserts", icon: "🍨" },
   { id: 9, name: "Beverages", icon: "🥤" },
   { id: 10, name: "Biryani", icon: "🍚" },
-  { id: 11, name: "Rolls", icon: "🌯" },
+ 
 ];
 
 const MenuManagement = () => {
