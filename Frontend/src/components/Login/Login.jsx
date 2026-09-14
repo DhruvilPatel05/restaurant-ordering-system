@@ -7,14 +7,14 @@ import { toast } from "react-toastify";
 import { StoreContext } from "../../context/StoreContext";
 
 const Login = () => {
-  const { settoken, loadCart } = useContext(StoreContext);
+ const { settoken, loadCart, fetchFoodLIst } = useContext(StoreContext);
   const navigate = useNavigate();
   const [data, setdata] = useState({
     email: "",
     password: "",
   });
   const location = useLocation();
-const redirectPath = location.state?.from || "/";
+const redirectPath = location.state?.from || "/explore-food"; // Default redirect path if not specified
 
   const handleChange = (e) => {
     setdata((prev) => ({
@@ -52,14 +52,45 @@ if (!existingRestaurantId && reaponse.data.restaurantId) {
 
       
           const role = reaponse.data.role;
-        // if (role === "USER") {
-        //   await loadCart(reaponse.data.token);
-        // }
 
 
-  if (role === "USER") {
+
+if (role === "USER") {
+
+  const restaurantId = localStorage.getItem("restaurantId");
+  const tableNo = localStorage.getItem("tableNo");
+
+  if (restaurantId && tableNo) {
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_API_URL}/api/tables/${restaurantId}/occupy/${tableNo}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${reaponse.data.token}`,
+          },
+        }
+      );
+
+      console.log("Table occupied successfully");
+
+    } catch (error) {
+      console.log("Table occupy error:", error);
+
+      if (error.response?.status === 409) {
+        toast.error("This table is already occupied.");
+      } else {
+        toast.error("Unable to occupy table.");
+      }
+
+      return;
+    }
+  }
+
   await loadCart(reaponse.data.token);
-  navigate(redirectPath); // ✅ go back to explore-food
+  await fetchFoodLIst(reaponse.data.token);
+
+  navigate(redirectPath);
 } else if (role === "RESTAURANT_ADMIN") {
     navigate("/admin/dashboard");  
   } else if (role === "CHEF") {

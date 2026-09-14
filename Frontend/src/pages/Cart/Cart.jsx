@@ -12,7 +12,7 @@ const Cart = () => {
   }, []);
 
   const navigate = useNavigate();
-    const restaurantId = localStorage.getItem("restaurantId");
+  const restaurantId = localStorage.getItem("restaurantId");
 
   const {
     foodList,
@@ -36,12 +36,18 @@ const Cart = () => {
   // }
   // const total = subtotal + tax + shipping;
 
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+
   const handleCheckout = async () => {
+    // Prevent multiple clicks while order is being processed
+    if (isPlacingOrder) return;
+
     if (cartItems.length === 0) {
       toast.warning("Your cart is empty.");
       return;
     }
 
+    setIsPlacingOrder(true);
     try {
       const token = localStorage.getItem("token");
 
@@ -61,17 +67,21 @@ const Cart = () => {
       // console.log("Order Payload:", orderData);
 
       // ✅ 1. Create order
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/orders`, orderData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/orders`,
+        orderData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
 
       // ✅ 2. Clear cart in backend
-     await axios.delete(
-  `${import.meta.env.VITE_API_URL}/api/cart/${restaurantId}`,
-  {
-    headers: { Authorization: `Bearer ${token}` },
-  }
-);
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/api/cart/${restaurantId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
 
       // ✅ 3. Clear cart in frontend
       setquantities({});
@@ -82,6 +92,8 @@ const Cart = () => {
     } catch (error) {
       console.log(error);
       toast.error("Failed to place order");
+    } finally {
+      setIsPlacingOrder(false);
     }
   };
 
@@ -141,14 +153,16 @@ const Cart = () => {
             <Link to="/explore-food">
               <button className="continue-btn">← Continue Shopping</button>
             </Link>
-            <button className="checkout-btn" onClick={handleCheckout}>
-              Place Order
-            </button>
+           <button
+  className="checkout-btn"
+  onClick={handleCheckout}
+  disabled={isPlacingOrder}
+>
+  {isPlacingOrder ? "Placing Order..." : "Place Order"}
+</button>
           </div>
 
           <div className="checkout-wrapper"></div>
-
-        
         </div>
       </div>
     </>

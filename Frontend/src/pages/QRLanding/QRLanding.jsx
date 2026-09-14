@@ -17,7 +17,7 @@ const QRLanding = () => {
     } else {
       navigate("/explore-food");
     }
-  }, []);
+  }, [restaurantId, tableNumber, navigate]);
 
   return <div>Loading restaurant...</div>;
 };

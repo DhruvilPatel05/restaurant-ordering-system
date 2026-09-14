@@ -7,7 +7,7 @@ const PaymentSuccess = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // const [seconds, setSeconds] = useState(8);
+  // const [seconds, setSeconds] = useState(8)
   const [paymentUpdated, setPaymentUpdated] = useState(false);
 
   let orderIds = location.state?.orderIds;

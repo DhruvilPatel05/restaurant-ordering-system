@@ -5,7 +5,16 @@ import "./FoodDisplay.css";
 import FoodItem from "../FoodItem/FoodItem";
 
 const FoodDisplay = ({ category, searchText }) => {
-  const { foodList } = useContext(StoreContext);
+  
+  const { foodList, foodLoading } = useContext(StoreContext);
+
+if (foodLoading) {
+  return (
+    <div className="food-loading">
+      <h4>Loading food...</h4>
+    </div>
+  );
+}
 
   if (!foodList) {
     return <div>Loading...</div>;
