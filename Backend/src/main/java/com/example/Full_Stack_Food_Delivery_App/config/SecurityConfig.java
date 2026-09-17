@@ -123,7 +123,7 @@ public class SecurityConfig {
 
     private UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173","http://localhost:5174","http://10.27.245.203:5173","http://192.168.1.68:5173","https://dhruvil-restaurant-system.netlify.app/","https://restaurant-ordering-system-phi.vercel.app/"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173","http://localhost:5174","http://10.27.245.203:5173","http://192.168.1.68:5173","https://dhruvil-restaurant-system.netlify.app/","https://restaurant-ordering-system-phi.vercel.app/","http://3.7.136.240"));
         configuration.setAllowedMethods(List.of("GET","POST","DELETE","PUT","OPTIONS","PATCH"));
         configuration.setAllowedHeaders(List.of("Authorization","Content-Type"));
         configuration.setAllowCredentials(true );
