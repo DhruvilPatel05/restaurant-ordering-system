@@ -38,8 +38,8 @@ public class StripeController {
                                         .build()
                         )
 
-                        .setSuccessUrl("http://localhost:5173/payment-success")
-                        .setCancelUrl("http://localhost:5173/payment-success")
+                        .setSuccessUrl("http://3.7.136.240/payment-success")
+                        .setCancelUrl("http://3.7.136.240/payment-success")
 
                         // metadata useful later (webhook / order update)
                         .putMetadata("restaurantId", dto.getRestaurantId())
